@@ -1,40 +1,35 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { createTheme, MantineProvider } from '@mantine/core'
 import '@mantine/core/styles.css';
-import { MantineProvider } from '@mantine/core';
+import AppRoutes from './Routes/AppRoutes'
 
+
+const theme = createTheme({
+  focusRing: "never",
+  fontFamily: "Poppins, sans-serif",
+  headings: {
+    fontFamily: "Merriweather, serif"
+  },
+  colors: {
+    primary: ['#f1fcfa', '#cff8ef', '#9ff0e1', '#67e1cf', '#32b9a9', '#1fad9f', '#168b82', '#166f69', '#165955', '#174a47', '#072c2b'],
+    neutral: ['#f6f6f6', '#e7e7e7', '#d1d1d1', '#b0b0b0', '#888888', '#6d6d6d', '#5d5d5d', '#4f4f4f', '#454545', '#3d3d3d', '#000000',],
+
+  },
+  primaryColor: "primary",
+  primaryShade: 4,
+  defaultGradient: {
+    from: "primary.4",
+    to: "primary.8",
+    deg: 132,
+  }
+});
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-    <MantineProvider>
-      <div>
-        <p className='text-2xl capitalize'>hello sharath</p>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-
-    </MantineProvider>
-      
+    <> 
+        <MantineProvider theme={theme} forceColorScheme='light'>
+          <AppRoutes />
+        </MantineProvider> 
     </>
   )
 }
