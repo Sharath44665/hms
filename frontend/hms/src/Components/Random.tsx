@@ -1,6 +1,6 @@
 const Random = () => {
     return  (
-        <div className="min-h-[1000px]">
+        <div className="">
             random
         </div>
     )
