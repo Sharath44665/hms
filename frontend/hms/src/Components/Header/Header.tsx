@@ -14,7 +14,7 @@ const Header = () => {
                     <Button>Login</Button>
                 </Link>
                 <ActionIcon variant="transparent" size="md" aria-label="Settings">
-                    <IconBellRinging size="md" stroke={1.5} />
+                    <IconBellRinging size={34} stroke={1.5} />
                 </ActionIcon>
                 <ProfileMenu />
             </div>

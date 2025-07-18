@@ -1,6 +1,8 @@
 import './App.css'
 import { createTheme, MantineProvider } from '@mantine/core'
+import { Notifications } from '@mantine/notifications';
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 import AppRoutes from './Routes/AppRoutes'
 
 
@@ -26,10 +28,11 @@ const theme = createTheme({
 function App() {
 
   return (
-    <> 
-        <MantineProvider theme={theme} forceColorScheme='light'>
-          <AppRoutes />
-        </MantineProvider> 
+    <>
+      <MantineProvider theme={theme} forceColorScheme='light'>
+        <AppRoutes />
+        <Notifications position='top-center' />
+      </MantineProvider>
     </>
   )
 }
