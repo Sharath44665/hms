@@ -1,5 +1,6 @@
 import { Avatar, Text } from "@mantine/core";
 import { IconCalendarCheck, IconHeartbeat, IconLayoutGrid, IconMoodHeart, IconStethoscope, IconVaccine } from "@tabler/icons-react";
+import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 
 const links = [
@@ -21,6 +22,7 @@ const links = [
 ]
 
 const Sidebar = () => {
+    const user = useSelector((state: any) => state.user)
     return (
         <div className="flex">
 
@@ -37,8 +39,8 @@ const Sidebar = () => {
                         <div className="p-1 bg-white rounded-full shadow-lg">
                             <Avatar src="avatar.png" variant='filled' alt="it's me" size="xl" />
                         </div>
-                        <span className="font-medium text-light">Sharath</span>
-                        <Text c="dimmed" size="xs" className="text-light">Admin</Text>
+                        <span className="font-medium text-light">{user.name}</span>
+                        <Text c="dimmed" size="xs" className="text-light">{user.role}</Text>
                     </div>
                     <div className="flex flex-col gap-1">
                         {

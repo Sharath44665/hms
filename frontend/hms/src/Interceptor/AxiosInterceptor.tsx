@@ -5,7 +5,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-        console.log("interceptor: ", config)
+        // console.log("interceptor: ", config)
         return config;
     }
 )

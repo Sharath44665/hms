@@ -11,7 +11,7 @@ const RegisterPage = () => {
     const [loading, setLoading] = useState(false)
     const form = useForm({
         initialValues: {
-            type:'PATIENT',
+            role:'PATIENT',
             name:"",
             email: '',
             password: '',
@@ -33,7 +33,7 @@ const RegisterPage = () => {
 
     const handleSubmit = (values: typeof form.values) => {
         setLoading(true)
-        registerUser(values).then((_data) => { 
+        registerUser(values).then((_data) => {  
             successNotification("Registered Successfully")
             navigate("/login");
         })
@@ -51,7 +51,7 @@ const RegisterPage = () => {
             <div className="w-[450px] backdrop-blur-md p-10 py-8 rounded-lg ">
                 <form className="flex flex-col gap-5 [&_input]:!placeholder-neutral-100 [&_.mantine-Input-input]:!border-white [&_.mantine-Input-input]:!border [&_input]:!pl-2 [&_input]:!text-white" onSubmit={form.onSubmit(handleSubmit)}>
                     <div className="self-center font-medium font-heading text-white text-xl">Register</div>
-                    <SegmentedControl fullWidth size="md" radius="md" color="pink"bg="none" className="[&_*]:!text-white border border-white" data={[{label:'Patient', value:"PATIENT"}, {label:'Doctor', value:"Doctor"}, {label:'Admin', value:"ADMIN"}]} {...form.getInputProps("type")} />
+                    <SegmentedControl fullWidth size="md" radius="md" color="pink"bg="none" className="[&_*]:!text-white border border-white" data={[{label:'Patient', value:"PATIENT"}, {label:'Doctor', value:"DOCTOR"}, {label:'Admin', value:"ADMIN"}]} {...form.getInputProps("role")} />
                     <TextInput
                         variant="unstyled"
                         size="md"
