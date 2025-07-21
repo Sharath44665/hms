@@ -4,18 +4,24 @@ import com.hms.user.UserMS.dto.UserDTO;
 import com.hms.user.UserMS.entity.User;
 import com.hms.user.UserMS.exception.HmsException;
 import com.hms.user.UserMS.repository.UserRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service("User service")
+@Service("userService")
+@Transactional
 public class UserServiceImpl implements UserService{
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private ApiService apiService;
 
     @Override
     public void registerUser(UserDTO userDTO) throws HmsException {
@@ -24,6 +30,9 @@ public class UserServiceImpl implements UserService{
             throw  new HmsException("USER_ALREADY_EXIST");
         }
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        Long profileId = apiService.addProfile(userDTO).block();
+        System.out.println(profileId);
+        userDTO.setProfileId(profileId);
         userRepository.save(userDTO.toEntity());
     }
 

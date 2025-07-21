@@ -27,10 +27,12 @@ public class Patient {
     @Column(unique = true)
     private String aadharNo;
     private BloodGroup bloodGroup;
+    private String allergies;
+    private String chronicDesease;
 
     public PatientDTO toDTO() {
         return new PatientDTO(this.id, this.name, this.email, this.dob, this.phone, this.address, this.aadharNo,
-                this.bloodGroup);
+                this.bloodGroup, this.allergies, this.chronicDesease);
     }
 
    

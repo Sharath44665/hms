@@ -31,7 +31,7 @@ public class SecurityConfig {
 
         // return http.build();
 
-        http.csrf().disable().authorizeHttpRequests(auth -> auth.requestMatchers(request -> "SECRET".equals(request.getHeader("X-Secret-Key"))).permitAll().anyRequest().denyAll());
+        http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth -> auth.requestMatchers(request -> "SECRET".equals(request.getHeader("X-Secret-Key"))).permitAll().anyRequest().denyAll());
         return http.build();
     }
 }
