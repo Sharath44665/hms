@@ -4,6 +4,7 @@ import { Notifications } from '@mantine/notifications';
 import { Provider } from "react-redux";
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
+import '@mantine/dates/styles.css';
 import AppRoutes from './Routes/AppRoutes'
 import Store from './Store';
 

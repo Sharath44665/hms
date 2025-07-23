@@ -5,19 +5,19 @@ import { NavLink } from "react-router-dom";
 
 const links = [
     {
-        name: "Dashboard", url: "/dashboard", icon: <IconLayoutGrid stroke={1.5} />
+        name: "Dashboard", url: "/doctor/dashboard", icon: <IconLayoutGrid stroke={1.5} />
+    }, 
+    {
+        name: "Profile", url: "/doctor/profile", icon: <IconLayoutGrid stroke={1.5} />
+    }, 
+    {
+        name: "Patients", url: "/doctor/patients", icon: <IconMoodHeart stroke={1.5} />
     },
     {
-        name: "Doctors", url: "/doctors", icon: <IconStethoscope stroke={1.5} />
+        name: "Appointments", url: "/doctor/appointments", icon: <IconCalendarCheck stroke={1.5} />
     },
     {
-        name: "Patients", url: "/patients", icon: <IconMoodHeart stroke={1.5} />
-    },
-    {
-        name: "Appointments", url: "/appointments", icon: <IconCalendarCheck stroke={1.5} />
-    },
-    {
-        name: "Pharmacy", url: "/pharmacy", icon: <IconVaccine stroke={1.5} />
+        name: "Pharmacy", url: "/doctor/pharmacy", icon: <IconVaccine stroke={1.5} />
     }
 ]
 
@@ -37,7 +37,7 @@ const Sidebar = () => {
                 <div className="flex mt-20 flex-col gap-5">
                     <div className="flex flex-col gap-1 items-center">
                         <div className="p-1 bg-white rounded-full shadow-lg">
-                            <Avatar src="avatar.png" variant='filled' alt="it's me" size="xl" />
+                            <Avatar src="/avatar.png" variant='filled' alt="it's me" size="xl" />
                         </div>
                         <span className="font-medium text-light">{user.name}</span>
                         <Text c="dimmed" size="xs" className="text-light">{user.role}</Text>

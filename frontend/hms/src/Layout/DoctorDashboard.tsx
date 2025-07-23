@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
-import Header from "../Components/Header/Header";
+import Header from "../Components/Header/Header"; 
 import Sidebar from "../Components/Doctor/Sidebar/Sidebar";
 
-const AdminDashboard = () => {
+const DoctorDashboard = () => {
     return (
          <div className="flex">
                 <Sidebar />
@@ -14,4 +14,4 @@ const AdminDashboard = () => {
     )
 }
 
-export default AdminDashboard;
+export default DoctorDashboard;
