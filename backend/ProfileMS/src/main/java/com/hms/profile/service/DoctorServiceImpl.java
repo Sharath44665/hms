@@ -26,4 +26,10 @@ public class DoctorServiceImpl implements DoctorService {
         return doctorRepository.findById(id).orElseThrow(() -> new HmsException("DOCTOR_NOT_FOUND")).toDTO();
     }
 
+    @Override
+    public DoctorDTO updateDoctor(DoctorDTO doctorDTO) throws HmsException {
+        doctorRepository.findById(doctorDTO.getId()).orElseThrow(()-> new HmsException("DOCTOR_NOT_FOUND"));
+        return doctorRepository.save(doctorDTO.toEntity()).toDTO();
+    }
+
 }

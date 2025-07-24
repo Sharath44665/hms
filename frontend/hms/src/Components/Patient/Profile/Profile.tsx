@@ -1,10 +1,15 @@
 import { Avatar, Button, Divider, Modal, NumberInput, Select, Table, TagsInput, TextInput } from "@mantine/core";
 import { DateInput } from '@mantine/dates';
 import { IconChecks, IconEdit } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { bloodGroups } from "../../../data/DropdownData";
+import { bloodGroup, bloodGroups } from "../../../data/DropdownData";
 import { useDisclosure } from "@mantine/hooks";
+import { getPatient, updatePatient } from "../../../Service/PatientProfileService";
+import { formatDate } from "../../../Utility/DateUtility";
+import { useForm } from "@mantine/form";
+import { errorNotification, successNotification } from "../../../Utility/NotificationUtil";
+import { arrayToCSV } from "../../../Utility/OtherUtility";
 const patient = {
     dob: "22-jan-2001",
     phone: 88383288,
@@ -15,9 +20,62 @@ const patient = {
     chronicDesease: "demo disease1, demo disease2"
 }
 const Profile = () => {
-    const user = useSelector((state:any) => state.user)
+    const user = useSelector((state: any) => state.user)
     const [opened, { open, close }] = useDisclosure(false)
     const [editMode, setEditMode] = useState(false)
+    const [profile, setProfile] = useState<any>({})
+    useEffect(() => {
+        // console.log(user) 
+        getPatient(user.profileId).then((data) => {
+            setProfile({ ...data, allergies: data.allergies ? JSON.parse(data.allergies) : null, chronicDesease: data.chronicDesease ? JSON.parse(data.chronicDesease) : null })
+            // console.log(data)
+        }).catch((error) => {
+            console.log(error)
+        })
+    }, [])
+
+    const form = useForm({
+        initialValues: {
+            dob: "",
+            phone: "",
+            address: "",
+            aadharNo: "",
+            bloodGroup: "",
+            allergies: [],
+            chronicDesease: [],
+        },
+
+        validate: {
+            dob: (value) => !(value) ? "Date of Birth is required" : null,
+            phone: (value) => !(value) ? "Phone No is required" : null,
+            address: (value) => !(value) ? "Address is required" : null,
+            aadharNo: (value) => !(value) ? "Aadhar No is required" : null,
+        }
+
+    });
+
+    const handleEdit = () => {
+        form.setValues({ ...profile, dob: profile.dob ? new Date(profile.dob) : undefined, chronicDesease: profile.chronicDesease ?? [], allergies: profile.allergies ?? [] })
+        setEditMode(true)
+
+    }
+    const handleSubmit = (e: any) => {
+
+        let values = form.getValues()
+        form.validate()
+        if (!form.isValid()) return;
+        updatePatient({ ...profile, ...values, allergies: values.allergies ? JSON.stringify(values.allergies) : null, chronicDesease: values.chronicDesease ? JSON.stringify(values.chronicDesease) : null }).then((data) => {
+            successNotification("Profile updated Successfully")
+            setProfile({ ...data, ...values })
+            setEditMode(false)
+        }).catch((error) => {
+            console.log(error)
+            errorNotification(error.response.data.errorMessage)
+        })
+    }
+
+
+
     return (
         <div className="p-10">
             <div className="flex justify-between items-center">
@@ -36,8 +94,8 @@ const Profile = () => {
                 </div>
                 {
                     !editMode ?
-                        <Button onClick={() => setEditMode(true)} variant="filled" size="lg" leftSection={<IconEdit />}>Edit</Button> :
-                        <Button onClick={() => setEditMode(false)} variant="filled" size="lg" leftSection={<IconChecks />}>Save or Submit</Button>
+                        <Button type="button" onClick={handleEdit} variant="filled" size="lg" leftSection={<IconEdit />}>Edit</Button> :
+                        <Button onClick={handleSubmit} type="submit" variant="filled" size="lg" leftSection={<IconChecks />}>Save or Submit</Button>
 
                 }
             </div>
@@ -46,17 +104,17 @@ const Profile = () => {
                 <div className="text-2xl font-medium text-neutral-900 mb-5">Personal Information</div>
                 <Table striped stripedColor="primary.1" withRowBorders={false}  >
 
-                    <Table.Tbody>
+                    <Table.Tbody className="[&>tr]: !mb-3 [&_td]:!w-1/2 ">
                         <Table.Tr>
                             <Table.Td className="text-xl">Date of Birth</Table.Td>
                             {
                                 editMode ?
                                     <Table.Td className="text-xl">
-                                        <DateInput
+                                        <DateInput {...form.getInputProps("dob")}
                                             placeholder="Date of Birth"
                                         />
                                     </Table.Td> :
-                                    <Table.Td className="text-xl">{patient.dob}</Table.Td>
+                                    <Table.Td className="text-xl">{formatDate(profile.dob) ?? "-"}</Table.Td>
                             }
                         </Table.Tr>
                         <Table.Tr>
@@ -64,9 +122,9 @@ const Profile = () => {
                             {
                                 editMode ?
                                     <Table.Td className="text-xl">
-                                        <NumberInput maxLength={10} clampBehavior="strict" placeholder="Phone number" hideControls />
+                                        <NumberInput {...form.getInputProps("phone")} maxLength={10} clampBehavior="strict" placeholder="Phone number" hideControls />
                                     </Table.Td> :
-                                    <Table.Td className="text-xl">{patient.phone}</Table.Td>
+                                    <Table.Td className="text-xl">{profile.phone ?? "-"}</Table.Td>
                             }
                         </Table.Tr>
                         <Table.Tr>
@@ -74,10 +132,10 @@ const Profile = () => {
                             {
                                 editMode ?
                                     <Table.Td className="text-xl">
-                                        <TextInput
+                                        <TextInput {...form.getInputProps("address")}
                                             placeholder="Address" />
                                     </Table.Td> :
-                                    <Table.Td className="text-xl">{patient.address}</Table.Td>
+                                    <Table.Td className="text-xl">{profile.address ?? "-"}</Table.Td>
                             }
 
                         </Table.Tr>
@@ -86,9 +144,9 @@ const Profile = () => {
                             {
                                 editMode ?
                                     <Table.Td className="text-xl">
-                                        <NumberInput maxLength={12} clampBehavior="strict" placeholder="Aadhar number" hideControls />
+                                        <NumberInput {...form.getInputProps("aadharNo")} maxLength={12} clampBehavior="strict" placeholder="Aadhar number" hideControls />
                                     </Table.Td> :
-                                    <Table.Td className="text-xl">{patient.aadharNo}</Table.Td>
+                                    <Table.Td className="text-xl">{profile.aadharNo ?? "-"}</Table.Td>
                             }
                         </Table.Tr>
                         <Table.Tr>
@@ -96,9 +154,9 @@ const Profile = () => {
                             {
                                 editMode ?
                                     <Table.Td className="text-xl">
-                                        <Select placeholder="blood group" data={bloodGroups} />
+                                        <Select {...form.getInputProps("bloodGroup")} placeholder="blood group" data={bloodGroups} />
                                     </Table.Td> :
-                                    <Table.Td className="text-xl">{patient.bloodGroup}</Table.Td>
+                                    <Table.Td className="text-xl">{bloodGroup[profile.bloodGroup] ?? "-"}</Table.Td>
                             }
 
                         </Table.Tr>
@@ -107,9 +165,9 @@ const Profile = () => {
                             {
                                 editMode ?
                                     <Table.Td className="text-xl">
-                                        <TagsInput placeholder="allergies seperated by comma" />
+                                        <TagsInput {...form.getInputProps("allergies")} placeholder="allergies seperated by comma" />
                                     </Table.Td> :
-                                    <Table.Td className="text-xl">{patient.allergies}</Table.Td>
+                                    <Table.Td className="text-xl">{arrayToCSV(profile.allergies) ?? "-"}</Table.Td>
                             }
 
                         </Table.Tr>
@@ -118,9 +176,9 @@ const Profile = () => {
                             {
                                 editMode ?
                                     <Table.Td className="text-xl">
-                                        <TagsInput placeholder="Chronic Disease seperated by comma" />
+                                        <TagsInput  {...form.getInputProps("chronicDesease")} placeholder="Chronic Disease seperated by comma" />
                                     </Table.Td> :
-                                    <Table.Td className="text-xl">{patient.chronicDesease}</Table.Td>
+                                    <Table.Td className="text-xl">{arrayToCSV(profile.chronicDesease) ?? "-"}</Table.Td>
                             }
                         </Table.Tr>
                     </Table.Tbody>

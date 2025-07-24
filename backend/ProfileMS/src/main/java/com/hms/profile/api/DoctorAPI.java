@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
@@ -36,4 +38,8 @@ public class DoctorAPI {
         return new ResponseEntity<>(doctorService.getDoctorById(id), HttpStatus.OK);
     }
     
+    @PutMapping("/update")
+    public ResponseEntity<DoctorDTO> updateDoctor( @RequestBody DoctorDTO doctorDTO) throws HmsException {
+        return new ResponseEntity<>(doctorService.updateDoctor(doctorDTO), HttpStatus.OK);
+    }
 }

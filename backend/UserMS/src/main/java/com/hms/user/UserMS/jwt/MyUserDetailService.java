@@ -21,7 +21,7 @@ public class MyUserDetailService implements UserDetailsService {
         try {
             UserDTO dto = userService.getUser(email);
             return new CustomUserDetails(dto.getId(), dto.getEmail(), dto.getEmail(), dto.getPassword(), dto.getRole(),
-                    dto.getName(), null);
+                    dto.getName(), dto.getProfileId(), null);
         } catch (HmsException e) {
             e.printStackTrace();
         }
