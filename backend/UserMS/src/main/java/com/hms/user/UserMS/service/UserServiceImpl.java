@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Service("userService")
 @Transactional
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -26,8 +26,8 @@ public class UserServiceImpl implements UserService{
     @Override
     public void registerUser(UserDTO userDTO) throws HmsException {
         Optional<User> opt = userRepository.findByEmail(userDTO.getEmail());
-        if(opt.isPresent()){
-            throw  new HmsException("USER_ALREADY_EXIST");
+        if (opt.isPresent()) {
+            throw new HmsException("USER_ALREADY_EXIST");
         }
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         Long profileId = apiService.addProfile(userDTO).block();
@@ -38,8 +38,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserDTO loginUser(UserDTO userDTO) throws HmsException {
-        User user = userRepository.findByEmail(userDTO.getEmail()).orElseThrow(()-> new HmsException("USER_NOT_FOUND"));
-        if(!passwordEncoder.matches(userDTO.getPassword(), user.getPassword())){
+        User user = userRepository.findByEmail(userDTO.getEmail()).orElseThrow(() -> new HmsException("USER_NOT_FOUND"));
+        if (!passwordEncoder.matches(userDTO.getPassword(), user.getPassword())) {
             throw new HmsException("INVALID_CREDENTIALS");
         }
         user.setPassword(null);
@@ -48,16 +48,16 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserDTO getByUserId(Long id) throws HmsException {
-        return userRepository.findById(id).orElseThrow(()-> new HmsException("USER_NOT_FOUND")).toDTO();
+        return userRepository.findById(id).orElseThrow(() -> new HmsException("USER_NOT_FOUND")).toDTO();
     }
 
     @Override
     public void updateUser(UserDTO userDTO) {
-        
+
     }
 
     @Override
     public UserDTO getUser(String email) throws HmsException {
-       return userRepository.findByEmail(email).orElseThrow(()-> new HmsException("USER_NOT_FOUND")).toDTO();
+        return userRepository.findByEmail(email).orElseThrow(() -> new HmsException("USER_NOT_FOUND")).toDTO();
     }
 }

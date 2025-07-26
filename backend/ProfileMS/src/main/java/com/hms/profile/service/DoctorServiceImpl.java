@@ -32,4 +32,9 @@ public class DoctorServiceImpl implements DoctorService {
         return doctorRepository.save(doctorDTO.toEntity()).toDTO();
     }
 
+    @Override
+    public Boolean doctorExists(Long id) throws HmsException {
+        return doctorRepository.existsById(id);
+    }
+
 }
