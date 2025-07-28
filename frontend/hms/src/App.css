@@ -77,3 +77,31 @@
 {
 	background-color: #32b9a9;
 }
+
+
+@layer tailwind-base, primereact, tailwind-utilities;
+
+/* IMPORTANT: In "styled" mode you must add the PrimeReact Theme here. Do NOT include in "unstyled" mode */
+@import 'primereact/resources/themes/lara-light-blue/theme.css' layer(primereact);
+
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer tailwind-utilities { 
+  @tailwind utilities;
+}
+
+
+/* [{
+	"resource": "/home/sharath/Documents/hms/frontend/hms/src/App.css",
+	"owner": "tailwindcss-intellisense",
+	"code": "invalidTailwindDirective",
+	"severity": 8,
+	"message": "'@tailwind base' is no longer available in v4. Use '@import \"tailwindcss/preflight\"' instead.",
+	"startLineNumber": 88,
+	"startColumn": 13,
+	"endLineNumber": 88,
+	"endColumn": 17,
+	"origin": "extHost1"
+}] */

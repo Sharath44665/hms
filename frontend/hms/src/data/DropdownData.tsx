@@ -23,4 +23,27 @@ const bloodGroup: Record<string, string> = {
 const doctorSpecializations = ["General Practitioner", "Cardiologist", "Neurologist", "Pediatrician", "Oncologist", "Orthopedic Surgeon", "Dermatologist", "Gynecologist", "Psychiatrist", "Endocrinologist"]
 
 const doctorDepartments = ["General Medicine", "Cardiology", "Neurology", "Pediatrics", "Oncology", "Orthopedics", "Dermatology", "Gynecology", "Psychiatry", "Endocrinology"]
-export { bloodGroups, doctorSpecializations, doctorDepartments, bloodGroup }
+
+const appointmentReasons =[
+    "Routine Check-up",
+    "Follow-up Visit",
+    "Vaccination",
+    "Blood Test",
+    "Physical Therapy",
+    "Specialist Consultation",
+    "Diagnostic Imaging (X-ray, MRI, CT Scan)",
+    "Surgical Consultation",
+    "Chronic Disease Management",
+    "Prenatal Care",
+    "Postnatal Care",
+    "Emergency Care",
+    "Mental Health Counseling",
+    "Dental Check-up",
+    "Eye Examination",
+    "Cardiology Evaluation",
+    "Oncology Follow-up",
+    "Pediatric Check-up",
+    "Injury Assessment",
+    "Pre-Operative Evaluation"
+]
+export { bloodGroups, doctorSpecializations, doctorDepartments, bloodGroup, appointmentReasons }
