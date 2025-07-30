@@ -4,6 +4,8 @@ import com.hms.appointment.dto.AppointmentDTO;
 import com.hms.appointment.dto.AppointmentDetails;
 import com.hms.appointment.exception.HmsException;
 
+import java.util.List;
+
 public interface AppointmentService {
     Long scheduleAppointment(AppointmentDTO appointmentDTO) throws HmsException;
 
@@ -16,4 +18,7 @@ public interface AppointmentService {
     AppointmentDTO getAppointmentDetails(Long appointmentId) throws HmsException;
 
     AppointmentDetails getAppointmentDetailsWithName(Long appointmentId) throws HmsException;
+
+    List<AppointmentDetails> getAllAppointmentsByPatientId(Long patientId) throws HmsException;
+
 }

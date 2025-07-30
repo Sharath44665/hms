@@ -25,6 +25,7 @@ const doctorSpecializations = ["General Practitioner", "Cardiologist", "Neurolog
 const doctorDepartments = ["General Medicine", "Cardiology", "Neurology", "Pediatrics", "Oncology", "Orthopedics", "Dermatology", "Gynecology", "Psychiatry", "Endocrinology"]
 
 const appointmentReasons =[
+    "General Consultation",
     "Routine Check-up",
     "Follow-up Visit",
     "Vaccination",

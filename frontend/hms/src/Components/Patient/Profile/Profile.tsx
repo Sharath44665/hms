@@ -65,6 +65,7 @@ const Profile = () => {
         form.validate()
         if (!form.isValid()) return;
         updatePatient({ ...profile, ...values, allergies: values.allergies ? JSON.stringify(values.allergies) : null, chronicDesease: values.chronicDesease ? JSON.stringify(values.chronicDesease) : null }).then((data) => {
+            console.log(data)
             successNotification("Profile updated Successfully")
             setProfile({ ...data, ...values })
             setEditMode(false)
