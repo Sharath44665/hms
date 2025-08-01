@@ -13,7 +13,7 @@ import { DateTimePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { appointmentReasons } from '../../../data/DropdownData';
 import { useSelector } from 'react-redux';
-import { cancelAppointment, getAppointmentsByPatient, scheduleAppointment } from '../../../Service/AppointmentService';
+import { cancelAppointment, getAppointmentsByDoctor, getAppointmentsByPatient, scheduleAppointment } from '../../../Service/AppointmentService';
 import { errorNotification, successNotification } from '../../../Utility/NotificationUtil';
 import { formatDateWithtime } from '../../../Utility/DateUtility';
 import { modals } from '@mantine/modals';
@@ -53,7 +53,7 @@ const Appointment = () => {
     const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
     const [filters, setFilters] = useState<DataTableFilterMeta>({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        doctorName: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+        patientName: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
         reason: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
         notes: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
         status: { value: null, matchMode: FilterMatchMode.IN },
@@ -108,7 +108,7 @@ const Appointment = () => {
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const fetchData = () => {
-        getAppointmentsByPatient(user.profileId).then((data) => {
+        getAppointmentsByDoctor(user.profileId).then((data) => {
             setAppointments(getCustomers(data))
         }).catch((error) => {
             console.error("Error fetching appointments: ", error)
@@ -192,9 +192,9 @@ const Appointment = () => {
     const actionBodyTemplate = (rowData: any) => {
 
         return <div className='flex gap-2'>
-            <ActionIcon>
+            {/* <ActionIcon>
                 <IconEdit stroke={1.4} />
-            </ActionIcon>
+            </ActionIcon> */}
             <ActionIcon color='red' onClick={() => openDeleteModal(rowData)}>
                 <IconTrash stroke={1.4} />
             </ActionIcon>
@@ -265,14 +265,15 @@ const Appointment = () => {
     })
     return (
         <div className="card">
-            <Toolbar className="mb-4" start={leftToolbarTemplate} center={centerToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
+            <Toolbar className="mb-4"  start={centerToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
             <DataTable value={filteredAppointments} stripedRows size='small' paginator rows={10}
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 rowsPerPageOptions={[10, 25, 50]} dataKey="id"
 
-                filters={filters} filterDisplay="menu" globalFilterFields={['doctorName', 'reason', 'notes', 'status']}
+                filters={filters} filterDisplay="menu" globalFilterFields={['patientName', 'reason', 'notes', 'status']}
                 emptyMessage="No customers found." currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
-                <Column field="doctorName" header="Doctor" sortable filter filterPlaceholder="Search by name" style={{ minWidth: '14rem' }} />
+                <Column field="patientName" header="Patient" sortable filter filterPlaceholder="Search by name" style={{ minWidth: '14rem' }} />
+                <Column field="patientPhone" header="Phone" sortable filter filterPlaceholder="Search by name" style={{ minWidth: '14rem' }} />
                 <Column field="appointmentTime" header="Appointment Time" sortable filterPlaceholder="Search by name" style={{ minWidth: '14rem' }} body={timeTemplate} />
                 <Column field="reason" header="Reason" sortable filter filterPlaceholder="Search by name" style={{ minWidth: '14rem' }} />
                 <Column field="notes" header="Notes" sortable filter filterPlaceholder="Search by name" style={{ minWidth: '14rem' }} />
