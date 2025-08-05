@@ -10,5 +10,7 @@ public interface ApRecordService {
 
     public ApRecordDTO getApRecordByAppointmentId(Long appointmentId) throws HmsException;
 
+    public ApRecordDTO getApRecordDetailsByAppointmentId(Long appointmentId) throws HmsException;
+
     public ApRecordDTO getApRecordById(Long recordId) throws HmsException;
 }

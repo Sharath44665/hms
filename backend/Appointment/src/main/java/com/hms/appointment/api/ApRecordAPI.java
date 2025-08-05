@@ -13,7 +13,7 @@ import java.security.PublicKey;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/appointment-report")
+@RequestMapping("/appointment/report")
 @Validated
 @RequiredArgsConstructor
 public class ApRecordAPI {
@@ -30,9 +30,14 @@ public class ApRecordAPI {
         return  new ResponseEntity<>("Appointment Report Updated", HttpStatus.OK);
     }
 
-    @GetMapping("/getAppointmentId/{appointmentId}")
+    @GetMapping("/getByAppointmentId/{appointmentId}")
     public ResponseEntity<ApRecordDTO> getAppointmentReportByAppointmentId(@PathVariable Long appointmentId) throws HmsException{
         return new ResponseEntity<>(apRecordService.getApRecordByAppointmentId(appointmentId), HttpStatus.OK);
+    }
+
+    @GetMapping("/getDetailsByAppointmentId/{appointmentId}")
+    public ResponseEntity<ApRecordDTO> getAppointmentReportDetailsByAppointmentId(@PathVariable Long appointmentId) throws HmsException{
+        return new ResponseEntity<>(apRecordService.getApRecordDetailsByAppointmentId(appointmentId), HttpStatus.OK);
     }
 
     @GetMapping("/getById/{recordId}")
