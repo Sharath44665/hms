@@ -83,4 +83,19 @@ const medicalTests = [
   "Prostate-Specific Antigen (PSA) Test",
   "Stool Test"
 ];
-export { bloodGroups, doctorSpecializations, doctorDepartments, bloodGroup, appointmentReasons, symptoms, medicalTests }
+
+const dosageFrequencies = [
+  "1-0-0", // Once daily (morning)
+  "0-1-0", // Once daily (afternoon)
+  "0-0-1", // Once daily (evening)
+  "1-0-1", // Twice daily (morning and evening)
+  "1-1-0", // Twice daily (morning and afternoon)
+  "0-1-1", // Twice daily (afternoon and evening)
+  "1-1-1", // Three times daily
+  "2-0-0", // Two doses (morning)
+  "2-2-2", // Two doses three times daily
+  "1-0-0 PRN", // Once daily (morning) as needed
+  "0-0-1 PRN", // Once daily (evening) as needed
+  "1-1-1 PRN" // Three times daily as needed
+];
+export { bloodGroups, doctorSpecializations, doctorDepartments, bloodGroup, appointmentReasons, symptoms, medicalTests, dosageFrequencies }

@@ -38,4 +38,10 @@ const getAppointmentsByDoctor = async (doctorId: any) => {
         .then((response: any) => response.data)
         .catch((error: any) => { throw error; })
 }
-export { scheduleAppointment, cancelAppointment, getAppointment, getAppointmentDetails, getAppointmentsByPatient, getAppointmentsByDoctor }
+
+const createAppointmentReport= (data: any)=> {
+    return axiosInstance.post(`/appointment/report/create`, data)
+        .then((response: any) => response.data)
+        .catch((error: any) => { throw error; })
+}
+export { scheduleAppointment, cancelAppointment, getAppointment, getAppointmentDetails, getAppointmentsByPatient, getAppointmentsByDoctor, createAppointmentReport }

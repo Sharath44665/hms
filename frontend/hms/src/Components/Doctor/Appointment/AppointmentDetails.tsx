@@ -82,7 +82,7 @@ const AppointmentDetails = () => {
                     </Tabs.Panel>
 
                     <Tabs.Panel value="reports">
-                        <ApReport />
+                        <ApReport appointment={appointment} />
                     </Tabs.Panel>
                 </Tabs>
             </div>
