@@ -47,4 +47,40 @@ const appointmentReasons =[
     "Injury Assessment",
     "Pre-Operative Evaluation"
 ]
-export { bloodGroups, doctorSpecializations, doctorDepartments, bloodGroup, appointmentReasons }
+
+const symptoms = [
+  "Fever",
+  "Cough",
+  "Fatigue",
+  "Headache",
+  "Sore throat",
+  "Shortness of breath",
+  "Muscle pain",
+  "Nausea",
+  "Diarrhea",
+  "Loss of taste or smell",
+  "Chest pain",
+  "Dizziness",
+  "Rash",
+  "Joint pain",
+  "Chills"
+];
+
+const medicalTests = [
+  "Blood Pressure Measurement",
+  "Complete Blood Count (CBC)",
+  "Blood Glucose Test",
+  "Cholesterol Panel",
+  "Thyroid Function Test",
+  "Urinalysis",
+  "Electrocardiogram (ECG)",
+  "Chest X-Ray",
+  "Lipid Profile",
+  "Hemoglobin A1c",
+  "Kidney Function Test",
+  "Liver Function Test",
+  "Pap Smear",
+  "Prostate-Specific Antigen (PSA) Test",
+  "Stool Test"
+];
+export { bloodGroups, doctorSpecializations, doctorDepartments, bloodGroup, appointmentReasons, symptoms, medicalTests }

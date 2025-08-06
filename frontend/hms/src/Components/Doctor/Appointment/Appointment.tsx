@@ -6,18 +6,19 @@ import { Column } from 'primereact/column';
 import { ActionIcon, Button, LoadingOverlay, Modal, SegmentedControl, Select, Text, Textarea } from '@mantine/core';
 import { Tag } from 'primereact/tag';
 import { TextInput } from '@mantine/core';
-import { IconEdit, IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
+import { IconEye, IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { getDoctorDropdown } from '../../../Service/DoctorProfileService';
 import { DateTimePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { appointmentReasons } from '../../../data/DropdownData';
 import { useSelector } from 'react-redux';
-import { cancelAppointment, getAppointmentsByDoctor, getAppointmentsByPatient, scheduleAppointment } from '../../../Service/AppointmentService';
+import { cancelAppointment, getAppointmentsByDoctor, scheduleAppointment } from '../../../Service/AppointmentService';
 import { errorNotification, successNotification } from '../../../Utility/NotificationUtil';
 import { formatDateWithtime } from '../../../Utility/DateUtility';
 import { modals } from '@mantine/modals';
 import { Toolbar } from 'primereact/toolbar';
+import { useNavigate } from 'react-router-dom';
 // import { CustomerService } from './service/CustomerService';
 
 interface Country {
@@ -44,6 +45,7 @@ interface Customer {
 }
 
 const Appointment = () => {
+    const navigate = useNavigate();
     const [opened, { open, close }] = useDisclosure(false);
     const [loading, setLoading] = useState(false)
     const [tab, setTab] = useState<string>("Today")
@@ -192,9 +194,9 @@ const Appointment = () => {
     const actionBodyTemplate = (rowData: any) => {
 
         return <div className='flex gap-2'>
-            {/* <ActionIcon>
-                <IconEdit stroke={1.4} />
-            </ActionIcon> */}
+            <ActionIcon>
+                <IconEye stroke={1.4} onClick={()=> navigate(""+rowData.id)} />
+            </ActionIcon>
             <ActionIcon color='red' onClick={() => openDeleteModal(rowData)}>
                 <IconTrash stroke={1.4} />
             </ActionIcon>
