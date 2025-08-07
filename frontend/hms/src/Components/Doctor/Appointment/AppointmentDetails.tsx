@@ -5,6 +5,7 @@ import { getAppointmentDetails } from "../../../Service/AppointmentService";
 import { formatDateWithtime } from "../../../Utility/DateUtility";
 import { IconClipboardHeart, IconStethoscope, IconVaccine } from "@tabler/icons-react";
 import ApReport from "./ApReport";
+import Prescriptions from "./Prescriptions";
 
 const AppointmentDetails = () => {
     const { id } = useParams();
@@ -16,7 +17,7 @@ const AppointmentDetails = () => {
         }).catch((err) => {
             console.error("error fetching appointment: ", err);
         })
-    }, [])
+    }, [id])
 
 
     return (
@@ -78,7 +79,7 @@ const AppointmentDetails = () => {
                     </Tabs.Panel>
 
                     <Tabs.Panel value="prescriptions">
-                        Messages tab content
+                        <Prescriptions appointment={appointment} />
                     </Tabs.Panel>
 
                     <Tabs.Panel value="reports">

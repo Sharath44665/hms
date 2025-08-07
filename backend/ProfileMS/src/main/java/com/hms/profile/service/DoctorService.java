@@ -17,4 +17,6 @@ public interface DoctorService {
 
     public List<DoctorDropdown> getDoctorDropdowns() throws HmsException;
 
+    public List<DoctorDropdown> getDoctorsById(List<Long> ids ) throws HmsException;
+
 }

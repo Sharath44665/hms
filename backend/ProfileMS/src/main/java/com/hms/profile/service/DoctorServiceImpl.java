@@ -45,4 +45,10 @@ public class DoctorServiceImpl implements DoctorService {
         return doctorRepository.findAllDoctorDropdowns();
     }
 
+
+    public List<DoctorDropdown> getDoctorsById(List<Long> ids) throws HmsException {
+
+        return doctorRepository.findAllDoctorDropdownsByIds(ids);
+    }
+
 }
