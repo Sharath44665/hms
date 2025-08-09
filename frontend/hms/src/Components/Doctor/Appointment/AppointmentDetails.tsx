@@ -12,7 +12,7 @@ const AppointmentDetails = () => {
     const [appointment, setAppointment] = useState<any>({})
     useEffect(() => {
         getAppointmentDetails(id).then((res) => {
-            console.log("appointment details: ", res)
+            // console.log("appointment details: ", res)
             setAppointment(res)
         }).catch((err) => {
             console.error("error fetching appointment: ", err);
