@@ -1,5 +1,6 @@
 package com.hms.pharmacy.entity;
 
+import com.hms.pharmacy.dto.MedicineDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,6 +29,10 @@ public class Medicine {
 
     public Medicine(Long id){
         this.id = id;
+    }
+
+    public MedicineDTO toDTO(){
+        return new MedicineDTO(id, name, dosage, category, type, manufacturer, unitPrice, createdAt);
     }
 
 }
