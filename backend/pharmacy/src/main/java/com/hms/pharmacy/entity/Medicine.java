@@ -25,6 +25,7 @@ public class Medicine {
     private MedicineType type; // tablet, syrup
     private String manufacturer;
     private Integer unitPrice;
+    private Integer stock; // current stock
     private LocalDateTime createdAt;
 
     public Medicine(Long id){
@@ -32,7 +33,7 @@ public class Medicine {
     }
 
     public MedicineDTO toDTO(){
-        return new MedicineDTO(id, name, dosage, category, type, manufacturer, unitPrice, createdAt);
+        return new MedicineDTO(id, name, dosage, category, type, manufacturer, unitPrice, stock, createdAt);
     }
 
 }
