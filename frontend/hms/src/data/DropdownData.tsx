@@ -98,4 +98,59 @@ const dosageFrequencies = [
   "0-0-1 PRN", // Once daily (evening) as needed
   "1-1-1 PRN" // Three times daily as needed
 ];
-export { bloodGroups, doctorSpecializations, doctorDepartments, bloodGroup, appointmentReasons, symptoms, medicalTests, dosageFrequencies }
+
+const medicineCategories = [
+  { "label": "Analgesics", "value": "ANALGESICS" },
+  { "label": "Antibiotics", "value": "ANTIBIOTICS" },
+  { "label": "Antivirals", "value": "ANTIVIRALS" },
+  { "label": "Antifungals", "value": "ANTIFUNGALS" },
+  { "label": "Antiparasitics", "value": "ANTIPARASITICS" },
+  { "label": "Antihistamines", "value": "ANTIHISTAMINES" },
+  { "label": "Antidepressants", "value": "ANTIDEPRESSANTS" },
+  { "label": "Antipsychotics", "value": "ANTIPSYCHOTICS" },
+  { "label": "Antihypertensives", "value": "ANTIHYPERTENSIVES" },
+  { "label": "Diuretics", "value": "DIURETICS" },
+  { "label": "Antidiabetics", "value": "ANTIDIABETICS" },
+  { "label": "Anticoagulants", "value": "ANTICOAGULANTS" },
+  { "label": "Antiplatelets", "value": "ANTIPLATELETS" },
+  { "label": "Statins", "value": "STATINS" },
+  { "label": "Bronchodilators", "value": "BRONCHODILATORS" },
+  { "label": "Corticosteroids", "value": "CORTICOSTEROIDS" },
+  { "label": "Immunosuppressants", "value": "IMMUNOSUPPRESSANTS" },
+  { "label": "Anticonvulsants", "value": "ANTICONVULSANTS" },
+  { "label": "Antiemetics", "value": "ANTIEMETICS" },
+  { "label": "Antianxiety", "value": "ANTIANXIETY" },
+  { "label": "Hormone Therapy", "value": "HORMONE_THERAPY" },
+  { "label": "Chemotherapy", "value": "CHEMOTHERAPY" },
+  { "label": "Vaccines", "value": "VACCINES" },
+  { "label": "Anesthetics", "value": "ANESTHETICS" },
+  { "label": "Antacids", "value": "ANTACIDS" },
+  { "label": "Laxatives", "value": "LAXATIVES" },
+  { "label": "Antiinflammatory", "value": "ANTIINFLAMMATORY" },
+  { "label": "Sedatives", "value": "SEDATIVES" },
+  { "label": "Stimulants", "value": "STIMULANTS" },
+  { "label": "Vitamins Supplements", "value": "VITAMINS_SUPPLEMENTS" },
+  { "label": "Antitussives", "value": "ANTITUSSIVES" },
+  { "label": "Expectorants", "value": "EXPECTORANTS" },
+  { "label": "Ophthalmic", "value": "OPHTHALMIC" },
+  { "label": "Dermatological", "value": "DERMATOLOGICAL" },
+  { "label": "Antiallergics", "value": "ANTIALLERGICS" },
+  { "label": "Antipyretics", "value": "ANTIPYRETICS" },
+  { "label": "Antimalarials", "value": "ANTIMALARIALS" },
+  { "label": "Antispasmodics", "value": "ANTISPASMODICS" }
+]
+
+const medicineTypes = [
+  { "label": "Syrup", "value": "SYRUP" },
+  { "label": "Tablet", "value": "TABLET" },
+  { "label": "Capsule", "value": "CAPSULE" },
+  { "label": "Injection", "value": "INJECTION" },
+  { "label": "Ointment", "value": "OINTMENT" },
+  { "label": "Liquid", "value": "LIQUID" },
+  { "label": "Powder", "value": "POWDER" },
+  { "label": "Cream", "value": "CREAM" },
+  { "label": "Spray", "value": "SPRAY" },
+  { "label": "Drops", "value": "DROPS" }
+]
+ 
+export { bloodGroups, doctorSpecializations, doctorDepartments, bloodGroup, appointmentReasons, symptoms, medicalTests, dosageFrequencies, medicineCategories, medicineTypes }

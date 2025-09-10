@@ -15,7 +15,7 @@ public class SaleServiceImpl implements SaleService {
     private final SaleRepository saleRepository;
     @Override
     public Long createSale(SaleDTO dto) throws HmsException {
-        if(saleRepository.existByPrescriptionId(dto.getPrescriptionId())){
+        if(saleRepository.existsByPrescriptionId(dto.getPrescriptionId())){
             throw new HmsException("SALE_ALREADY_EXISTS");
         }
         dto.setSaleDate(LocalDateTime.now());

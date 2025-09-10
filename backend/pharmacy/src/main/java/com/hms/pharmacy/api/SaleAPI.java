@@ -6,7 +6,6 @@ import com.hms.pharmacy.dto.SaleItemDTO;
 import com.hms.pharmacy.exception.HmsException;
 import com.hms.pharmacy.service.SaleItemService;
 import com.hms.pharmacy.service.SaleService;
-import jakarta.ws.rs.Path;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

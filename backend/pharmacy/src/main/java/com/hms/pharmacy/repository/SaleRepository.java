@@ -6,6 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;
 
 public interface SaleRepository extends CrudRepository<Sale, Long> {
-    Boolean existByPrescriptionId(Long prescriptionId);
+    Boolean existsByPrescriptionId(Long prescriptionId);
     Optional<Sale> findByPrescriptionId(Long prescriptionId );
 }

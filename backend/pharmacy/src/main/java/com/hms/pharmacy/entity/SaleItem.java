@@ -14,12 +14,16 @@ public class SaleItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sale_id", nullable = false)
     private Sale sale;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sale_id", nullable = false)
+    @JoinColumn(name = "medicine_id", nullable = false)
+    // @JoinColumn(name = "sale_id", nullable = false)
     private Medicine medicine;
+
     private String batchNo;
     private Integer quantity;
     private Double unitPrice;

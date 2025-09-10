@@ -3,4 +3,9 @@ const arrayToCSV = (arr:string[]) => {
     return arr.join(", ")
 }
 
-export { arrayToCSV }
+const capitalizeFirstLetter = (value: string) =>{
+    if(!value) return "";
+    return value.charAt(0).toUpperCase()+value.slice(1)?.toLowerCase();
+}
+
+export { arrayToCSV, capitalizeFirstLetter }
