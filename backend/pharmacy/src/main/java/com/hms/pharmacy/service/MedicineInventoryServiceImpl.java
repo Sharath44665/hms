@@ -48,13 +48,13 @@ public class MedicineInventoryServiceImpl implements MedicineInventoryService {
         MedicineInventory existingInventory = medicineInventoryRepository.findById(medicine.getId()).orElseThrow(() -> new HmsException(("INVENTORY_NOT_FOUND")));
         existingInventory.setBatchNo(medicine.getBatchNo());
 
-        if (existingInventory.getQuantity() < medicine.getQuantity()) {
-            medicineService.addStock(medicine.getMedicineId(), medicine.getQuantity() - existingInventory.getQuantity());
-        } else if (existingInventory.getQuantity() > medicine.getQuantity()) {
-            medicineService.removeStock(medicine.getMedicineId(), existingInventory.getQuantity() - medicine.getQuantity());
+        if (existingInventory.getInitialQuantity() < medicine.getQuantity()) {
+            medicineService.addStock(medicine.getMedicineId(), medicine.getQuantity() - existingInventory.getInitialQuantity());
+        } else if (existingInventory.getInitialQuantity() > medicine.getQuantity()) {
+            medicineService.removeStock(medicine.getMedicineId(), existingInventory.getInitialQuantity() - medicine.getQuantity());
         }
         existingInventory.setQuantity(medicine.getQuantity());
-        existingInventory.setInitialQuantity(medicine.getInitialQuantity());
+        existingInventory.setInitialQuantity(medicine.getQuantity());
         existingInventory.setExpiryDate(medicine.getExpiryDate());
         return medicineInventoryRepository.save(existingInventory).toDTO();
     }

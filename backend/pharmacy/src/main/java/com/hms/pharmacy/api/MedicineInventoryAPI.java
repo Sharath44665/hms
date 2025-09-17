@@ -32,7 +32,7 @@ public class MedicineInventoryAPI {
         return new ResponseEntity<>(medicineInventoryService.getMedicineById(id), HttpStatus.OK);
     }
 
-   @GetMapping("/get/all")
+   @GetMapping("/getAll")
     public ResponseEntity<List<MedicineInventoryDTO>> getAllMedicineInventory() throws HmsException{
         return new ResponseEntity<>(medicineInventoryService.getAllMedicines(), HttpStatus.OK);
    }

@@ -65,9 +65,7 @@ const Medicine = () => {
             unitPrice: (value) => (value ? null : "Unit Price is required"),
 
         }
-    })
-
-    
+    }) 
 
     useEffect(() => {
         fetchData();
@@ -159,6 +157,7 @@ const Medicine = () => {
                         <Column field="name" header="Name" /> 
                         <Column field="reportDate" header="Report Date" sortable filterPlaceholder="Search by name" body={(rowData) => formatDate(rowData.createdAt)} />
                         <Column field="dosage" header="Dosage" />
+                        <Column field="stock" header="Stock" />
                         <Column field="category" header="Category"  body={rowData => capitalizeFirstLetter(rowData.category)} />
                         <Column field="type" header="Type" body={rowData => capitalizeFirstLetter(rowData.type)} />
                         <Column field="manufacturer" header="Manufacturer" />
