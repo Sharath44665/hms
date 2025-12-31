@@ -21,7 +21,7 @@ public class SaleAPI {
     private final SaleService saleService;
     private final SaleItemService saleItemService;
 
-    @PostMapping("/create")
+    @PostMapping("/create") // change SaleDTO to SaleRequest
     public ResponseEntity<Long> createSale(@RequestBody SaleDTO saleDTO) throws HmsException{
         return new ResponseEntity<>(saleService.createSale(saleDTO), HttpStatus.CREATED)  ;
     }

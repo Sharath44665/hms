@@ -15,6 +15,8 @@ public interface MedicineInventoryService {
 
     MedicineInventoryDTO updateMedicine(MedicineInventoryDTO medicine) throws HmsException;
 
+    String sellStock(Long medicineId, Integer quantity) throws HmsException;
+
     void deleteMedicine(Long id) throws HmsException;
 
     public void deleteExpiredMedicine() throws HmsException;

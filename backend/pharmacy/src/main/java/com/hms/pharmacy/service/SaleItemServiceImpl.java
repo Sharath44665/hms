@@ -12,6 +12,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SaleItemServiceImpl implements SaleItemService{
     private final SaleItemRepository saleItemRepository;
+    private final MedicineInventoryService medicineInventoryService;
+
     @Override
     public Long createSaleItem(SaleItemDTO saleItemDTO) throws HmsException {
         return saleItemRepository.save(saleItemDTO.toEntity()).getId();
@@ -45,5 +47,15 @@ public class SaleItemServiceImpl implements SaleItemService{
         return saleItemRepository.findById(id)
                 .map(SaleItem::toDTO)
                 .orElseThrow(()-> new HmsException("SALE_ITEM_NOT_FOUND"));
+    }
+
+    @Override
+    public void createSaleItem(Long saleId, List<SaleItemDTO> saleItemDTOS) throws HmsException {
+
+        saleItemDTOS.stream().map((x) -> {
+            x.setSaleId(saleId);
+            return x.toEntity();
+        }).forEach(saleItemRepository::save);
+
     }
 }

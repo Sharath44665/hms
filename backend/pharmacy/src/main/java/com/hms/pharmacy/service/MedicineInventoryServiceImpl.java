@@ -95,4 +95,46 @@ public class MedicineInventoryServiceImpl implements MedicineInventoryService {
     *: Month (any month).
     ?:  Day of week (no specific day of the week; used when day-of-month is specified).
     *  */
+
+
+    @Override
+    @Transactional
+    public String sellStock(Long medicineId, Integer quantity) throws HmsException {
+        List<MedicineInventory> inventories = medicineInventoryRepository.findByMedicineIdAndExpiryDateAfterAndQuantityGreaterThanStatusOrderByExpiryDateAsc(medicineId, LocalDate.now(), 0,StockStatus.ACTIVE);
+
+        if(inventories.isEmpty()){
+            throw new HmsException("OUT_OF_STOCK");
+        }
+
+        StringBuilder batchDetails = new StringBuilder();
+        int remainingQuantity = quantity;
+
+        for (MedicineInventory inventory: inventories){
+            if(remainingQuantity <= 0){
+                break;
+            }
+
+            int availableQuantity = inventory.getQuantity();
+
+            if(availableQuantity <= remainingQuantity){
+                // use up the entire batch
+                batchDetails.append(String.format("Batch %s: %d units\n", inventory.getBatchNo(), remainingQuantity));
+                remainingQuantity -= availableQuantity;
+                inventory.setQuantity(0);
+                inventory.setStatus(StockStatus.EXPIRED);
+//                medicineService.removeStock(medicineId, availableQuantity);
+            }else {
+                batchDetails.append(String.format("Batch %s: %d units\n", inventory.getBatchNo(), remainingQuantity));
+                inventory.setQuantity(availableQuantity - remainingQuantity);
+//                medicineService.removeStock(medicineId, remainingQuantity);
+                remainingQuantity = 0;
+            }
+        }
+        if(remainingQuantity >0){
+            throw new HmsException("INSUFFICIENT_STOCK");
+        }
+        medicineService.removeStock(medicineId, quantity);
+        medicineInventoryRepository.saveAll(inventories);
+        return batchDetails.toString();
+    }
 }
