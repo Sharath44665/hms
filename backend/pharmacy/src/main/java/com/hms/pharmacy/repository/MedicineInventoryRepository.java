@@ -11,5 +11,5 @@ public interface MedicineInventoryRepository extends CrudRepository<MedicineInve
     List<MedicineInventory> findByExpiryDateBefore(LocalDate date);
     // medicineId and expiryDate>now and quantity greater than 0, top 1 asc by expiry date
     // select * from medicine_inventory where medicine_id =? and expiry_date > now() and quantity > 0 order by expiry_date asc limit 1
-    List<MedicineInventory> findByMedicineIdAndExpiryDateAfterAndQuantityGreaterThanStatusOrderByExpiryDateAsc(Long medicineId, LocalDate date, Integer quantity, StockStatus status);
+    List<MedicineInventory> findByMedicineIdAndExpiryDateAfterAndQuantityGreaterThanAndStatusOrderByExpiryDateAsc(Long medicineId, LocalDate date, Integer quantity, StockStatus status);
 }

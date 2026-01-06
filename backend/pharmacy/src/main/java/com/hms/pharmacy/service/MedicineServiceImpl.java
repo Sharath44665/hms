@@ -74,7 +74,7 @@ public class MedicineServiceImpl implements MedicineService {
     @Override
     public Integer removeStock(Long id, Integer quantity) throws HmsException {
         Medicine medicine = medicineRepository.findById(id).orElseThrow(()-> new HmsException("MEDICINE_NOT_FOUND"));
-        medicine.setStock(medicine.getStock() != null? medicine.getStock()-quantity : 0 );
+        medicine.setStock(medicine.getStock() != null? medicine.getStock()-quantity : 0 ); 
         medicineRepository.save(medicine);
         return medicine.getStock();
     }

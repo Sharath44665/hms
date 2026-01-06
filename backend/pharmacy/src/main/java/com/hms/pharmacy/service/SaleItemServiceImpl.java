@@ -51,6 +51,7 @@ public class SaleItemServiceImpl implements SaleItemService{
 
     @Override
     public void createSaleItem(Long saleId, List<SaleItemDTO> saleItemDTOS) throws HmsException {
+    	
 
         saleItemDTOS.stream().map((x) -> {
             x.setSaleId(saleId);

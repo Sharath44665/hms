@@ -26,10 +26,11 @@ public class SaleServiceImpl implements SaleService {
     public Long createSale(SaleRequest dto) throws HmsException {
         if(saleRepository.existsByPrescriptionId(dto.getPrescriptionId())){
             throw new HmsException("SALE_ALREADY_EXISTS");
-        }
+        } 
         for(SaleItemDTO saleItem : dto.getSaleItems()){
-            medicineInventoryService.sellStock(saleItem.getMedicineId(), saleItem.getQuantity());
-        }
+    		saleItem.setBatchNo(
+          medicineInventoryService.sellStock(saleItem.getMedicineId(), saleItem.getQuantity()));
+      }
 
         Sale sale = new Sale(null, dto.getPrescriptionId(), LocalDateTime.now(), dto.getTotalAmount());
         sale = saleRepository.save(sale);

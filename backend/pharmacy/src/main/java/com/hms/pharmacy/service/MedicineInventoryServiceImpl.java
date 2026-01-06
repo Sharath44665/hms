@@ -100,7 +100,7 @@ public class MedicineInventoryServiceImpl implements MedicineInventoryService {
     @Override
     @Transactional
     public String sellStock(Long medicineId, Integer quantity) throws HmsException {
-        List<MedicineInventory> inventories = medicineInventoryRepository.findByMedicineIdAndExpiryDateAfterAndQuantityGreaterThanStatusOrderByExpiryDateAsc(medicineId, LocalDate.now(), 0,StockStatus.ACTIVE);
+        List<MedicineInventory> inventories = medicineInventoryRepository.findByMedicineIdAndExpiryDateAfterAndQuantityGreaterThanAndStatusOrderByExpiryDateAsc(medicineId, LocalDate.now(), 0,StockStatus.ACTIVE);
 
         if(inventories.isEmpty()){
             throw new HmsException("OUT_OF_STOCK");
@@ -108,8 +108,8 @@ public class MedicineInventoryServiceImpl implements MedicineInventoryService {
 
         StringBuilder batchDetails = new StringBuilder();
         int remainingQuantity = quantity;
-
-        for (MedicineInventory inventory: inventories){
+        
+        for (MedicineInventory inventory: inventories){ 
             if(remainingQuantity <= 0){
                 break;
             }
@@ -118,7 +118,7 @@ public class MedicineInventoryServiceImpl implements MedicineInventoryService {
 
             if(availableQuantity <= remainingQuantity){
                 // use up the entire batch
-                batchDetails.append(String.format("Batch %s: %d units\n", inventory.getBatchNo(), remainingQuantity));
+                batchDetails.append(String.format("Batch %s: %d units\n", inventory.getBatchNo(), availableQuantity));
                 remainingQuantity -= availableQuantity;
                 inventory.setQuantity(0);
                 inventory.setStatus(StockStatus.EXPIRED);

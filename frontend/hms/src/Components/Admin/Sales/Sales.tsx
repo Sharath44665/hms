@@ -1,4 +1,4 @@
-import { ActionIcon, Badge, Button, Fieldset, Group, NumberInput, Select, TextInput, type SelectProps } from "@mantine/core";
+import { ActionIcon, Badge, Button, Fieldset, Group, LoadingOverlay, NumberInput, Select, TextInput, type SelectProps } from "@mantine/core";
 import { medicineCategories } from "../../../data/DropdownData";
 import { IconCheck, IconEdit, IconPlus, IconSearch, IconTrash } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
@@ -98,12 +98,15 @@ const Sales = () => {
         })
     }
     const handleSubmit = (values: typeof form.values) => {
-        // console.log(values)
         let update = false;
+        const saleItems = values.saleItems.map((x:any) =>({...x, unitPrice:medicineMap[x.medicineId]?.unitPrice}));
+        const totalAmount = saleItems.reduce((acc:number, item:any) => acc + (item.unitPrice * item.quantity), 0)
+        // console.log(values)
+        // return;
 
 
         setLoading(true)
-        addSale(values).then((_res) => {
+        addSale({saleItems, totalAmount}).then((_res) => {
             successNotification(`Stock ${update ? 'updated' : 'added'} successfully`)
             form.reset()
             setEdit(false)
@@ -150,7 +153,7 @@ const Sales = () => {
             <div className="flex gap-2 items-center">
 
                 {option.label}
-                {option?.manufacturer && <span style={{ marginLeft: 'auto', fontSize: '0.8em', color: 'gray' }}>{option.manufacturer}</span>}
+                {option?.manufacturer && <span style={{ marginLeft: 'auto', fontSize: '0.8em', color: 'gray' }}>{option.manufacturer} - {option.dosage}</span>}
             </div>
             {checked && <IconCheck style={{ marginInlineStart: 'auto' }} />}
 
@@ -183,6 +186,7 @@ const Sales = () => {
 
                     </DataTable> :
                     <form onSubmit={form.onSubmit(handleSubmit)} className="grid gap-5">
+                        <LoadingOverlay visible={loading} />
                         <Fieldset className="grid gap-5" legend={<span className="text-lg font-medium text-primary-500">Medicine information</span>} radius="md">
                             <div className="grid gap-4 grid-cols-5" >
                                 {
@@ -191,10 +195,12 @@ const Sales = () => {
 
                                             <div className="col-span-2">
 
-                                                <Select renderOption={renderSelectOption} {...form.getInputProps(`saleItems.${index}.medicineId`)} label="Medicine" placeholder="Select Medicine" data={medicine.map(item => ({ ...item, value: "" + item.id, label: item.name }))} />
+                                                <Select renderOption={renderSelectOption} {...form.getInputProps(`saleItems.${index}.medicineId`)} label="Medicine" placeholder="Select Medicine" data={
+                                                    medicine.filter(x => !form.values.saleItems.some((item1:any,idx) => item1.medicineId == x.id && idx != index)).map(item => ({ ...item, value: "" + item.id, label: item.name }))
+                                                    } />
                                             </div>
                                             <div className="col-span-2">
-                                                <NumberInput {...form.getInputProps(`saleItems.${index}.quantity`)} min={0} max={50} clampBehavior="strict" label="Quantity" placeholder="Enter quantity" withAsterisk />
+                                                <NumberInput rightSectionWidth={80} rightSection={<div className="text-xs flex gap-1 text-white font-medium rounded-md bg-red-400 p-1">Stock: {medicineMap[item.medicineId]?.stock} </div>} {...form.getInputProps(`saleItems.${index}.quantity`)} min={0} max={medicineMap[item.medicineId]?.stock || 0 } clampBehavior="strict" label="Quantity" placeholder="Enter quantity" withAsterisk />
 
                                             </div>
                                             <div className="flex items-end justify-between">
