@@ -1,6 +1,6 @@
-import { ActionIcon, Badge, Button, Fieldset, Group, LoadingOverlay, NumberInput, Select, TextInput, type SelectProps } from "@mantine/core";
+import { ActionIcon, Badge, Button, Card, Divider, Fieldset, Group, LoadingOverlay, Modal, NumberInput, Select, Stack, Text, TextInput, type SelectProps } from "@mantine/core";
 import { medicineCategories } from "../../../data/DropdownData";
-import { IconCheck, IconEdit, IconPlus, IconSearch, IconTrash } from "@tabler/icons-react";
+import { IconCheck, IconEdit, IconEye, IconPlus, IconSearch, IconTrash } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { errorNotification, successNotification } from "../../../Utility/NotificationUtil";
 import { useEffect, useState } from "react";
@@ -13,8 +13,9 @@ import { capitalizeFirstLetter } from "../../../Utility/OtherUtility";
 import { DateInput } from "@mantine/dates";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { addSale } from "../../../Service/SalesService";
+import { addSale, getAllSaleItems, getAllSales } from "../../../Service/SalesService";
 import React from "react";
+import { useDisclosure } from "@mantine/hooks";
 
 interface SaleItem {
     medicineId: string;
@@ -45,12 +46,16 @@ const Sales = () => {
     const [edit, setEdit] = useState<boolean>(false)
     const [loading, setLoading] = useState(false);
     const [medicineMap, setMedicineMap] = useState<Record<string, any>>({})
+    const [opened, { open, close }] = useDisclosure(false);
+    const [saleItems, setSaleItems] = useState<any[]>([]);
 
     // as array
     const form = useForm({
         initialValues: {
+            buyerName: '',
+            buyerContact: '',
             saleItems: [
-                {medicineId:'', quantity:0}
+                { medicineId: '', quantity: 0 }
             ] as SaleItem[],
         },
         validate: {
@@ -77,12 +82,13 @@ const Sales = () => {
     }, [])
 
     const fetchData = () => {
-        // getAllStocks().then((res) => {
-        //     // console.log("Reports Data: ", res)
-        //     setData(res)
-        // }).catch((err) => {
-        //     console.error("error fetching reports: ", err);
-        // })
+        getAllSales().then((res) => {
+            // console.log("Reports Data: ", res)
+            setData(res)
+            console.log(res)
+        }).catch((err) => {
+            console.error("error fetching sales: ", err);
+        })
 
 
     }
@@ -97,16 +103,30 @@ const Sales = () => {
             expiryDate: new Date(rowData.expiryDate)
         })
     }
+
+    const handleDetails = (rowData: any) => {
+        open();
+        setLoading(true)
+        getAllSaleItems(rowData.id).then((res) => {
+            setSaleItems(res);
+            console.log(res)
+        }).catch((err) => {
+            console.error("Error fetching sale items: ", err)
+        }).finally(() => {
+            setLoading(false);
+        });
+    }
+
     const handleSubmit = (values: typeof form.values) => {
         let update = false;
-        const saleItems = values.saleItems.map((x:any) =>({...x, unitPrice:medicineMap[x.medicineId]?.unitPrice}));
-        const totalAmount = saleItems.reduce((acc:number, item:any) => acc + (item.unitPrice * item.quantity), 0)
+        const saleItems = values.saleItems.map((x: any) => ({ ...x, unitPrice: medicineMap[x.medicineId]?.unitPrice }));
+        const totalAmount = saleItems.reduce((acc: number, item: any) => acc + (item.unitPrice * item.quantity), 0)
         // console.log(values)
         // return;
 
 
         setLoading(true)
-        addSale({saleItems, totalAmount}).then((_res) => {
+        addSale({ ...values, saleItems, totalAmount }).then((_res) => {
             successNotification(`Stock ${update ? 'updated' : 'added'} successfully`)
             form.reset()
             setEdit(false)
@@ -134,7 +154,7 @@ const Sales = () => {
 
         return <div className='flex gap-2'>
             <ActionIcon>
-                <IconEdit stroke={1.4} onClick={() => onEdit(rowData)} />
+                <IconEye stroke={1.4} onClick={() => handleDetails(rowData)} />
             </ActionIcon>
         </div>;
     };
@@ -168,18 +188,18 @@ const Sales = () => {
         <div>
             {
                 !edit ?
-                    <DataTable header={header} value={data} stripedRows size='small' paginator rows={10}
+                    <DataTable header={header} removableSort value={data} stripedRows size='small' paginator rows={10}
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         rowsPerPageOptions={[10, 25, 50]} dataKey="id"
 
                         filters={filters} filterDisplay="menu" globalFilterFields={['doctorName', 'notes']}
                         emptyMessage="No customers found." currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
-                        <Column field="name" header="Medicine" body={(rowdata) => <span >{medicineMap["" + rowdata.medicineId]?.name} <span className="text-xs text-gray-700">{medicineMap["" + rowdata.medicineId]?.manufacturer}</span></span>} />
-                        <Column field="batchNo" header="Batch No." />
-                        <Column field="initialQuantity" header="Quantity" />
-                        <Column field="quantity" header="Remaining Quantity" />
-                        <Column field="expiryDate" header="Expiry Date" />
-                        <Column field="status" header="Status" body={statusBody} />
+                        <Column field="buyerName" header="Buyer" />
+                        <Column field="buyerContact" header="Contact" />
+                        {/* <Column field="Prescription" header="Pris" /> */}
+                        <Column field="totalAmount" header="Total Amount" sortable />
+                        <Column field="saleDate" header="Sale Date" sortable body={rowData => formatDate(rowData.saleDate)} />
+
 
 
                         <Column headerStyle={{ width: "5rem", textAlign: "center" }} bodyStyle={{ textAlign: "center", overflow: "visible" }} body={actionBodyTemplate} />
@@ -187,6 +207,14 @@ const Sales = () => {
                     </DataTable> :
                     <form onSubmit={form.onSubmit(handleSubmit)} className="grid gap-5">
                         <LoadingOverlay visible={loading} />
+                        <Fieldset className="grid gap-5" legend={<span className="text-lg font-medium text-primary-500">Buyer information</span>} radius="md">
+                            <div className="grid grid-cols-2 gap-5">
+
+                                <TextInput withAsterisk label="Buyer Name" placeholder="Enter your Buyer name" {...form.getInputProps('buyerName')} />
+                                <NumberInput maxLength={10} label="Contact Number" placeholder="Enter contact Number" {...form.getInputProps('buyerContact')} />
+                            </div>
+
+                        </Fieldset>
                         <Fieldset className="grid gap-5" legend={<span className="text-lg font-medium text-primary-500">Medicine information</span>} radius="md">
                             <div className="grid gap-4 grid-cols-5" >
                                 {
@@ -196,17 +224,17 @@ const Sales = () => {
                                             <div className="col-span-2">
 
                                                 <Select renderOption={renderSelectOption} {...form.getInputProps(`saleItems.${index}.medicineId`)} label="Medicine" placeholder="Select Medicine" data={
-                                                    medicine.filter(x => !form.values.saleItems.some((item1:any,idx) => item1.medicineId == x.id && idx != index)).map(item => ({ ...item, value: "" + item.id, label: item.name }))
-                                                    } />
+                                                    medicine.filter(x => !form.values.saleItems.some((item1: any, idx) => item1.medicineId == x.id && idx != index)).map(item => ({ ...item, value: "" + item.id, label: item.name }))
+                                                } />
                                             </div>
                                             <div className="col-span-2">
-                                                <NumberInput rightSectionWidth={80} rightSection={<div className="text-xs flex gap-1 text-white font-medium rounded-md bg-red-400 p-1">Stock: {medicineMap[item.medicineId]?.stock} </div>} {...form.getInputProps(`saleItems.${index}.quantity`)} min={0} max={medicineMap[item.medicineId]?.stock || 0 } clampBehavior="strict" label="Quantity" placeholder="Enter quantity" withAsterisk />
+                                                <NumberInput rightSectionWidth={80} rightSection={<div className="text-xs flex gap-1 text-white font-medium rounded-md bg-red-400 p-1">Stock: {medicineMap[item.medicineId]?.stock} </div>} {...form.getInputProps(`saleItems.${index}.quantity`)} min={0} max={medicineMap[item.medicineId]?.stock || 0} clampBehavior="strict" label="Quantity" placeholder="Enter quantity" withAsterisk />
 
                                             </div>
                                             <div className="flex items-end justify-between">
                                                 {
                                                     (item.quantity && item.medicineId) ?
-                                                    <div>Quantity {item.quantity} X {medicineMap[item.medicineId]?.unitPrice} = {item.quantity*medicineMap[item.medicineId]?.unitPrice} </div>:<div></div>
+                                                        <div>Quantity {item.quantity} X {medicineMap[item.medicineId]?.unitPrice} = {item.quantity * medicineMap[item.medicineId]?.unitPrice} </div> : <div></div>
                                                 }
                                                 <ActionIcon size={"lg"} color="red" onClick={() => form.removeListItem('saleItems', index)}>
                                                     <IconTrash size={16} />
@@ -230,7 +258,73 @@ const Sales = () => {
                         </div>
                     </form >
             }
+            <Modal opened={opened} size="xl" onClose={close} title="Sold Medicines" centered>
+                <div className="grid grid-cols-3 gap-5">
+                    {
+                        saleItems?.map((data: any, index: number) => {
+                            return (
+                                <Card shadow="sm" key={medicine.id} padding="lg" radius="md" withBorder>
+                                    <Card.Section withBorder inheritPadding py="xs">
+                                        <Group justify="space-between">
+                                            <Text fw={700} size="xl">
+                                                {medicineMap[data.medicineId]?.name} - {medicineMap[data.medicineId]?.dosage}
+                                            </Text>
+                                            <Badge color="blue" variant="light">
+                                                ({medicineMap[data.medicineId]?.manufacturer})
+                                            </Badge>
+                                            <div className="flex justify-between gap-3"> 
+                                                <Text size="xs" c="dimmed">
+                                                Batch No
+                                            </Text>
+                                                <Text size="xs">{data.batchNo}</Text>
 
+                                            
+                                            </div>
+                                            
+                                        </Group>
+                                    </Card.Section>
+
+                                    <Stack mt="md" gap="xs">
+                                        <Group justify="space-between">
+                                            <Text size="sm" c="dimmed">
+                                                Quantity
+                                            </Text>
+                                            <Text size="sm">{data.quantity}</Text>
+                                        </Group>
+
+                                        <Group justify="space-between">
+                                            <Text size="sm" c="dimmed">
+                                                Unit Price
+                                            </Text>
+                                            <Text size="sm">{data.unitPrice}</Text>
+                                        </Group>
+
+                                        <Group justify="space-between">
+                                            <Text size="sm" c="dimmed">
+                                                Total
+                                            </Text>
+                                            <Text size="sm">₹ {data.quantity * data.unitPrice}</Text>
+                                        </Group>
+
+                                       
+
+                                        <Divider my="sm" />
+
+                                        
+                                    </Stack>
+                                </Card>
+                            )
+                        })
+                    }
+                </div>
+
+                {
+                    saleItems?.length === 0 && (
+                        <Text size="lg" mt={"md"}>No medicine prescribed for this appointment</Text>
+                    )
+                }
+
+            </Modal>
 
         </div>
     )
