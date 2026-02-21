@@ -39,7 +39,7 @@ const getAppointmentsByDoctor = async (doctorId: any) => {
         .catch((error: any) => { throw error; })
 }
 
-const createAppointmentReport = async  (data: any) => {
+const createAppointmentReport = async (data: any) => {
     return axiosInstance.post(`/appointment/report/create`, data)
         .then((response: any) => response.data)
         .catch((error: any) => { throw error; })
@@ -57,9 +57,21 @@ const getReportsByPatientId = async (patientId: any) => {
         .catch((error) => { throw error })
 }
 
-const getPrescriptionsByPatientId = async (patientId: any) => { 
+const getPrescriptionsByPatientId = async (patientId: any) => {
     return axiosInstance.get(`/appointment/report/getPrescriptionsByPatientId/${patientId}`)
         .then((response: any) => response.data)
         .catch((error) => { throw error })
 }
-export { scheduleAppointment, cancelAppointment, getAppointment, getAppointmentDetails, getAppointmentsByPatient, getAppointmentsByDoctor, createAppointmentReport, isReportExists, getReportsByPatientId, getPrescriptionsByPatientId }
+
+const getAllPrescriptions = async () => {
+    return axiosInstance.get("/appointment/report/getAllPrescriptions")
+        .then((response: any) => response.data)
+        .catch((error: any) => { throw error; })
+}
+
+const getMedicinesByPrescriptionId = async (prescriptionId: any) => {
+    return axiosInstance.get(`/appointment/report/getMedicinesByPrescriptionId/${prescriptionId}`)
+        .then((response:any) => response.data)
+        .catch((error:any) => {throw error;})
+}
+export { scheduleAppointment, cancelAppointment, getAppointment, getAppointmentDetails, getAppointmentsByPatient, getAppointmentsByDoctor, createAppointmentReport, isReportExists, getReportsByPatientId, getPrescriptionsByPatientId, getAllPrescriptions, getMedicinesByPrescriptionId }
