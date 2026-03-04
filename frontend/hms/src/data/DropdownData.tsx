@@ -1,22 +1,22 @@
 const bloodGroups = [
-    { value: "A_POSITIVE", label: "A+" },
-    { value: "A_NEGATIVE", label: "A-", },
-    { value: "B_POSITIVE", label: "B+", },
-    { value: "B_NEGATIVE", label: "B-", },
-    { value: "AB_POSITIVE", label: "AB+", },
-    { value: "AB_NEGATIVE", label: "AB-" },
-    { value: "O_POSITIVE", label: "O+" },
-    { value: "O_NEGATIVE", label: "O-" }];
+  { value: "A_POSITIVE", label: "A+" },
+  { value: "A_NEGATIVE", label: "A-", },
+  { value: "B_POSITIVE", label: "B+", },
+  { value: "B_NEGATIVE", label: "B-", },
+  { value: "AB_POSITIVE", label: "AB+", },
+  { value: "AB_NEGATIVE", label: "AB-" },
+  { value: "O_POSITIVE", label: "O+" },
+  { value: "O_NEGATIVE", label: "O-" }];
 
 const bloodGroup: Record<string, string> = {
-    "A_POSITIVE": "A+",
-    "A_NEGATIVE": "A-",
-    "B_POSITIVE": "B+",
-    "B_NEGATIVE": "B-",
-    "AB_POSITIVE": "AB+",
-    "AB_NEGATIVE": "AB-",
-    "O_POSITIVE": "O+",
-    "O_NEGATIVE": "O-",
+  "A_POSITIVE": "A+",
+  "A_NEGATIVE": "A-",
+  "B_POSITIVE": "B+",
+  "B_NEGATIVE": "B-",
+  "AB_POSITIVE": "AB+",
+  "AB_NEGATIVE": "AB-",
+  "O_POSITIVE": "O+",
+  "O_NEGATIVE": "O-",
 
 }
 
@@ -24,28 +24,28 @@ const doctorSpecializations = ["General Practitioner", "Cardiologist", "Neurolog
 
 const doctorDepartments = ["General Medicine", "Cardiology", "Neurology", "Pediatrics", "Oncology", "Orthopedics", "Dermatology", "Gynecology", "Psychiatry", "Endocrinology"]
 
-const appointmentReasons =[
-    "General Consultation",
-    "Routine Check-up",
-    "Follow-up Visit",
-    "Vaccination",
-    "Blood Test",
-    "Physical Therapy",
-    "Specialist Consultation",
-    "Diagnostic Imaging (X-ray, MRI, CT Scan)",
-    "Surgical Consultation",
-    "Chronic Disease Management",
-    "Prenatal Care",
-    "Postnatal Care",
-    "Emergency Care",
-    "Mental Health Counseling",
-    "Dental Check-up",
-    "Eye Examination",
-    "Cardiology Evaluation",
-    "Oncology Follow-up",
-    "Pediatric Check-up",
-    "Injury Assessment",
-    "Pre-Operative Evaluation"
+const appointmentReasons = [
+  "General Consultation",
+  "Routine Check-up",
+  "Follow-up Visit",
+  "Vaccination",
+  "Blood Test",
+  "Physical Therapy",
+  "Specialist Consultation",
+  "Diagnostic Imaging (X-ray, MRI, CT Scan)",
+  "Surgical Consultation",
+  "Chronic Disease Management",
+  "Prenatal Care",
+  "Postnatal Care",
+  "Emergency Care",
+  "Mental Health Counseling",
+  "Dental Check-up",
+  "Eye Examination",
+  "Cardiology Evaluation",
+  "Oncology Follow-up",
+  "Pediatric Check-up",
+  "Injury Assessment",
+  "Pre-Operative Evaluation"
 ]
 
 const symptoms = [
@@ -92,12 +92,28 @@ const dosageFrequencies = [
   "1-1-0", // Twice daily (morning and afternoon)
   "0-1-1", // Twice daily (afternoon and evening)
   "1-1-1", // Three times daily
+  "1-0-0.5",
   "2-0-0", // Two doses (morning)
   "2-2-2", // Two doses three times daily
   "1-0-0 PRN", // Once daily (morning) as needed
   "0-0-1 PRN", // Once daily (evening) as needed
   "1-1-1 PRN" // Three times daily as needed
 ];
+
+const freqMap: Record<string, number> = {
+  "1-0-0": 1,
+  "0-1-0": 1,
+  "0-0-1": 1,
+  "1-0-1": 2,
+  "1-1-0": 2,
+  "0-1-1": 2,
+  "1-1-1": 3,
+  "0-0-0": 0,
+  "1-0-0.5": 1.5,
+  "1-0-0 PRN": 1,
+  "0-0-1 PRN": 1,
+  "1-1-1 PRN": 3
+}
 
 const medicineCategories = [
   { "label": "Analgesics", "value": "ANALGESICS" },
@@ -152,5 +168,5 @@ const medicineTypes = [
   { "label": "Spray", "value": "SPRAY" },
   { "label": "Drops", "value": "DROPS" }
 ]
- 
-export { bloodGroups, doctorSpecializations, doctorDepartments, bloodGroup, appointmentReasons, symptoms, medicalTests, dosageFrequencies, medicineCategories, medicineTypes }
+
+export { bloodGroups, doctorSpecializations, doctorDepartments, bloodGroup, appointmentReasons, symptoms, medicalTests, dosageFrequencies, medicineCategories, medicineTypes, freqMap }

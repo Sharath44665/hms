@@ -15,6 +15,7 @@ import React from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { Spotlight, type SpotlightActionData, spotlight } from '@mantine/spotlight';
 import { getAllPrescriptions, getMedicinesByPrescriptionId } from "../../../Service/AppointmentService";
+import { freqMap } from "../../../data/DropdownData";
 
 interface SaleItem {
     medicineId: string;
@@ -93,16 +94,25 @@ const Sales = () => {
         fetchData();
     }, [])
 
-    const handleImport = (item:any) => {
+    const handleImport = (item: any) => {
         setLoading(true)
-        getMedicinesByPrescriptionId(item.id).then((res) =>{
+        getMedicinesByPrescriptionId(item.id).then((res) => {
             setSaleItems(res);
+            form.setValues({
+                buyerName: item.patientName,
+                saleItems: res.filter((x:any) => x.medicineId != null).map((x: any) => ({ medicineId: String(x.medicineId), quantity: calculateQuantity(x.frequency, x.duration) }))
+            })
             console.table(res);
         }).catch((err) => {
             console.error("Error fetching medicines: ", err)
         }).finally(() => {
             setLoading(false);
         })
+    }
+
+    const calculateQuantity = (freq:string, duration:number) => {
+        const freqValue = freqMap[freq] || 0; 
+        return Math.ceil(freqValue * duration)
     }
 
     // const actions: SpotlightActionData[] = [
@@ -156,6 +166,17 @@ const Sales = () => {
 
     const handleSubmit = (values: typeof form.values) => {
         let update = false;
+        let flag = false;
+        values.saleItems.forEach((item:any, index:number) =>{
+            if (item.quantity > (medicineMap[item.medicineId].stock || 0)){
+                flag = true;
+                form.setFieldError(`saleItems.${index}.quantity`, `quantity exceeds available stock `);
+            }
+        })
+        if (flag){
+            errorNotification(`quantity exceeds available stock `);
+            return;
+        }
         const saleItems = values.saleItems.map((x: any) => ({ ...x, unitPrice: medicineMap[x.medicineId]?.unitPrice }));
         const totalAmount = saleItems.reduce((acc: number, item: any) => acc + (item.unitPrice * item.quantity), 0)
         // console.log(values)
@@ -273,7 +294,7 @@ const Sales = () => {
                                                     } />
                                                 </div>
                                                 <div className="col-span-2">
-                                                    <NumberInput rightSectionWidth={80} rightSection={<div className="text-xs flex gap-1 text-white font-medium rounded-md bg-red-400 p-1">Stock: {medicineMap[item.medicineId]?.stock} </div>} {...form.getInputProps(`saleItems.${index}.quantity`)} min={0} max={medicineMap[item.medicineId]?.stock || 0} clampBehavior="strict" label="Quantity" placeholder="Enter quantity" withAsterisk />
+                                                    <NumberInput rightSectionWidth={80} rightSection={<div className="text-xs flex gap-1 text-white font-medium rounded-md bg-red-400 p-1">Stock: {medicineMap[item.medicineId]?.stock} </div>} {...form.getInputProps(`saleItems.${index}.quantity`)} min={0} max={medicineMap[item.medicineId]?.stock ||0 } clampBehavior="strict" label="Quantity" placeholder="Enter quantity" withAsterisk />
 
                                                 </div>
                                                 <div className="flex items-end justify-between">
