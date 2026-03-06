@@ -46,6 +46,11 @@ public class DoctorAPI {
     public ResponseEntity<List<DoctorDropdown>> getDoctorDropdowns() throws HmsException{
         return new ResponseEntity<>(doctorService.getDoctorDropdowns(), HttpStatus.OK);
     }
+    
+    @GetMapping("/getAll")
+    public ResponseEntity<List<DoctorDTO>> getAllDoctors() throws HmsException{
+    	return new ResponseEntity<>(doctorService.getAllDoctors(), HttpStatus.OK);
+    }
 
     @GetMapping("/getDoctorsById")
     public ResponseEntity<List<DoctorDropdown>> getDoctorsById(@RequestParam List<Long> ids) throws HmsException{

@@ -20,6 +20,8 @@ const bloodGroup: Record<string, string> = {
 
 }
 
+const bloodGroupMap = bloodGroup
+
 const doctorSpecializations = ["General Practitioner", "Cardiologist", "Neurologist", "Pediatrician", "Oncologist", "Orthopedic Surgeon", "Dermatologist", "Gynecologist", "Psychiatrist", "Endocrinologist"]
 
 const doctorDepartments = ["General Medicine", "Cardiology", "Neurology", "Pediatrics", "Oncology", "Orthopedics", "Dermatology", "Gynecology", "Psychiatry", "Endocrinology"]
@@ -169,4 +171,4 @@ const medicineTypes = [
   { "label": "Drops", "value": "DROPS" }
 ]
 
-export { bloodGroups, doctorSpecializations, doctorDepartments, bloodGroup, appointmentReasons, symptoms, medicalTests, dosageFrequencies, medicineCategories, medicineTypes, freqMap }
+export { bloodGroups, doctorSpecializations, doctorDepartments, bloodGroup, appointmentReasons, symptoms, medicalTests, dosageFrequencies, medicineCategories, medicineTypes, freqMap, bloodGroupMap }

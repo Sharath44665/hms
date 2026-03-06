@@ -16,6 +16,8 @@ import AdminMedicinePage from "../Pages/Admin/AdminMedicinePage";
 import NotFoundPage from "../Pages/Patient/NotFoundPage";
 import AdminInventoryPage from "../Pages/Admin/AdminInventoryPage";
 import AdminSalesPage from "../Pages/Admin/AdminSalesPage";
+import AdminPatientPage from "../Pages/Admin/AdminPatientPage";
+import AdminDoctorPage from "../Pages/Admin/AdminDoctorPage";
 
 const AppRoutes = () => {
     return (
@@ -28,8 +30,8 @@ const AppRoutes = () => {
                     <Route path="medicine" element={<AdminMedicinePage />} />
                     <Route path="inventory" element={<AdminInventoryPage />} />
                     <Route path="sales" element={<AdminSalesPage />} />
-                    <Route path="patients" element={<Random />} />
-                    <Route path="doctors" element={<Random />} />
+                    <Route path="patients" element={<AdminPatientPage />} />
+                    <Route path="doctors" element={<AdminDoctorPage />} />
 
                 </Route>
                 <Route path="/doctor" element={<ProtectedRoute><DoctorDashboard /></ProtectedRoute>} >

@@ -1,6 +1,8 @@
 package com.hms.profile.service;
 
 import com.hms.profile.dto.DoctorDropdown;
+import com.hms.profile.entity.Doctor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,5 +52,11 @@ public class DoctorServiceImpl implements DoctorService {
 
         return doctorRepository.findAllDoctorDropdownsByIds(ids);
     }
+
+	@Override
+	public List<DoctorDTO> getAllDoctors() throws HmsException {
+		
+		return ((List<Doctor>) doctorRepository.findAll()).stream().map(doctor -> doctor.toDTO()).toList();
+	}
 
 }
