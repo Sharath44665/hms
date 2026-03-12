@@ -6,6 +6,7 @@ import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/dates/styles.css';
 import '@mantine/spotlight/styles.css';
+import '@mantine/dropzone/styles.css';
 import AppRoutes from './Routes/AppRoutes'
 import Store from './Store';
 import { PrimeReactProvider } from 'primereact/api';

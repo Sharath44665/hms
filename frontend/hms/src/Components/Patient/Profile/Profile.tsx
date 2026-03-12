@@ -10,6 +10,8 @@ import { formatDate } from "../../../Utility/DateUtility";
 import { useForm } from "@mantine/form";
 import { errorNotification, successNotification } from "../../../Utility/NotificationUtil";
 import { arrayToCSV } from "../../../Utility/OtherUtility";
+import { Dropzone } from "@mantine/dropzone";
+import { BaseDemo } from "../../Utilities/Dropzone/dropzoneButton";
 const patient = {
     dob: "22-jan-2001",
     phone: 88383288,
@@ -186,7 +188,7 @@ const Profile = () => {
                 </Table>
             </div>
             <Modal centered opened={opened} onClose={close} title={<span className="text-xl font-medium">Upload Picture</span>}>
-                {/* Modal content */}
+                <BaseDemo />
             </Modal>
         </div>
     )
