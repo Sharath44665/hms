@@ -10,8 +10,8 @@ import { formatDate } from "../../../Utility/DateUtility";
 import { useForm } from "@mantine/form";
 import { errorNotification, successNotification } from "../../../Utility/NotificationUtil";
 import { arrayToCSV } from "../../../Utility/OtherUtility";
-import { Dropzone } from "@mantine/dropzone";
-import { BaseDemo } from "../../Utilities/Dropzone/dropzoneButton";
+import { DropzoneButton } from "../../Utilities/Dropzone/dropzoneButton";
+import useProtectedImage from "../../Utilities/Dropzone/useProtectedImage";
 const patient = {
     dob: "22-jan-2001",
     phone: 88383288,
@@ -42,6 +42,7 @@ const Profile = () => {
             phone: "",
             address: "",
             aadharNo: "",
+            profilePictureId: "",
             bloodGroup: "",
             allergies: [],
             chronicDesease: [],
@@ -77,14 +78,14 @@ const Profile = () => {
         })
     }
 
-
+    const url = useProtectedImage(profile.profilePictureId);
 
     return (
         <div className="p-10">
             <div className="flex justify-between items-center">
                 <div className="flex gap-5 items-center">
                     <div className="flex flex-col items-center gap-3">
-                        <Avatar src="/avatar.png" variant='filled' alt="it's me" size={150} />
+                        <Avatar src={url} variant='filled' alt="it's me" size={150} />
                         {
                             editMode &&
                             <Button onClick={open} variant="filled" size="sm" >Upload</Button>
@@ -188,7 +189,7 @@ const Profile = () => {
                 </Table>
             </div>
             <Modal centered opened={opened} onClose={close} title={<span className="text-xl font-medium">Upload Picture</span>}>
-                <BaseDemo />
+                <DropzoneButton close={close} form={form} id="profilePictureId" />
             </Modal>
         </div>
     )

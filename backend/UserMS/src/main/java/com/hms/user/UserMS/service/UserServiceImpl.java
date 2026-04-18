@@ -1,5 +1,6 @@
 package com.hms.user.UserMS.service;
 
+import com.hms.user.UserMS.client.Profile;
 import com.hms.user.UserMS.client.ProfileClient;
 import com.hms.user.UserMS.dto.Roles;
 import com.hms.user.UserMS.dto.UserDTO;
@@ -69,5 +70,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO getUser(String email) throws HmsException {
         return userRepository.findByEmail(email).orElseThrow(() -> new HmsException("USER_NOT_FOUND")).toDTO();
+    }
+
+    @Override
+    public Long getProfile(Long id) throws HmsException {
+        User user = userRepository.findById(id).orElseThrow(() -> new HmsException("USER_NOT_FOUND"));
+        if (user.getRole().equals(Roles.DOCTOR)) {
+            return profileClient.getDoctor(id);
+        } else if (user.getRole().equals(Roles.PATIENT)) {
+            return profileClient.getPatient(id);
+        }
+        throw new HmsException("INVALID_USER_ROLE");
     }
 }

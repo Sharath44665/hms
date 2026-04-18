@@ -51,6 +51,11 @@ public class PatientAPI {
     public ResponseEntity<Boolean> patientExists(@PathVariable Long id) throws HmsException{
         return new ResponseEntity<>(patientService.patientExists(id), HttpStatus.OK);
     }
+
+    @GetMapping("/getProfileId/{id}")
+    public ResponseEntity<Long> getProfileId(@PathVariable Long id) throws HmsException {
+        return new ResponseEntity<>(patientService.getPatientById(id).getProfilePictureId(), HttpStatus.OK);
+    }
     
     @GetMapping("/getAll")
     public ResponseEntity<List<PatientDTO>> getAllPatients() throws HmsException{
