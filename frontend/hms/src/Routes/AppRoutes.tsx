@@ -18,6 +18,7 @@ import AdminInventoryPage from "../Pages/Admin/AdminInventoryPage";
 import AdminSalesPage from "../Pages/Admin/AdminSalesPage";
 import AdminPatientPage from "../Pages/Admin/AdminPatientPage";
 import AdminDoctorPage from "../Pages/Admin/AdminDoctorPage";
+import AdminDashboardPage from "../Pages/Admin/AdminDashboardPage";
 
 const AppRoutes = () => {
     return (
@@ -26,7 +27,7 @@ const AppRoutes = () => {
                 <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
                 <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
                 <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} >
-                    <Route path="dashboard" element={<Random />} />
+                    <Route path="dashboard" element={<AdminDashboardPage />} />
                     <Route path="medicine" element={<AdminMedicinePage />} />
                     <Route path="inventory" element={<AdminInventoryPage />} />
                     <Route path="sales" element={<AdminSalesPage />} />
