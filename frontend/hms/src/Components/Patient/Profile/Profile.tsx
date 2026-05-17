@@ -78,7 +78,7 @@ const Profile = () => {
         })
     }
 
-    const url = useProtectedImage(profile.profilePictureId);
+    const url = useProtectedImage(profile.profilePictureId); 
 
     return (
         <div className="p-10">
