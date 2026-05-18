@@ -8,6 +8,9 @@ import com.hms.appointment.repository.AppointmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -92,5 +95,49 @@ public class AppointmentServiceImpl implements AppointmentService {
                         }
 
                 ).toList();
+    }
+
+    @Override
+    public List<MonthlyVisitDTO> getAppointmentCountByPatient(Long patientId) throws HmsException {
+        return appointmentRepository.countCurrentYearVisitsByPatient(patientId);
+    }
+
+    @Override
+    public List<ReasonCountDTO> getReasonCountByPatient(Long patientId) {
+        return appointmentRepository.countReasonsByPatientId(patientId);
+    }
+
+    @Override
+    public List<MonthlyVisitDTO> getAppointmentCountByDoctor(Long doctorId) throws HmsException {
+        return appointmentRepository.countCurrentYearVisitsByDoctor(doctorId);
+    }
+
+    @Override
+    public List<MonthlyVisitDTO> getAppointmentCounts() throws HmsException {
+        return appointmentRepository.countCurrentYearVisits();
+    }
+
+    @Override
+    public List<ReasonCountDTO> getReasonCountByDoctor(Long doctorId) {
+        return appointmentRepository.countReasonsByDoctorId(doctorId);
+    }
+
+    @Override
+    public List<ReasonCountDTO> getReasonCount() {
+        return appointmentRepository.countReasons();
+    }
+
+    @Override
+    public List<AppointmentDetails> getTodaysAppointments() {
+        LocalDate today = LocalDate.now();
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
+        return appointmentRepository.findByAppointmentTimeBetween(startOfDay, endOfDay).stream().map(
+                appointment -> {
+                    DoctorDTO doctorDTO = profileClient.getDoctorById(appointment.getDoctorId());
+                    PatientDTO patientDTO = profileClient.getPatientById(appointment.getPatientId());
+                    return new AppointmentDetails(appointment.getId(),appointment.getPatientId(),patientDTO.getName(),patientDTO.getEmail(), patientDTO.getPhone(),appointment.getDoctorId(),doctorDTO.getName(),appointment.getAppointmentTime(),appointment.getStatus(),appointment.getReason(),appointment.getNotes());
+                }
+        ).toList();
     }
 }

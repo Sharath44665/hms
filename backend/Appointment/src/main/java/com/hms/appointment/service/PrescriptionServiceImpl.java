@@ -2,6 +2,7 @@ package com.hms.appointment.service;
 
 import com.hms.appointment.client.ProfileClient;
 import com.hms.appointment.dto.DoctorName;
+import com.hms.appointment.dto.MedicineDTO;
 import com.hms.appointment.dto.PrescriptionDTO;
 import com.hms.appointment.dto.PrescriptionDetails;
 import com.hms.appointment.entity.Prescription;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class PrescriptionServiceImpl implements PrescriptionService {
+
     private final PrescriptionRepository prescriptionRepository;
 
     private final MedicineService medicineService;
@@ -120,4 +122,11 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 		
 		return prescriptionDetails;
 	}
+
+    @Override
+    public List<MedicineDTO> getMedicineByPatientId(Long patientId) throws HmsException {
+         List<Long> pids = prescriptionRepository.findAllPreIdsByPatient(patientId);
+         return medicineService.getMedicinesByPrescriptionIds(pids);
+
+    }
 }
