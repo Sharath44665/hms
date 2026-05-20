@@ -2,6 +2,8 @@ package com.hms.user.UserMS.service;
 
 import com.hms.user.UserMS.client.Profile;
 import com.hms.user.UserMS.client.ProfileClient;
+import com.hms.user.UserMS.dto.MonthlyRoleCountDTO;
+import com.hms.user.UserMS.dto.RegistrationCountsDTO;
 import com.hms.user.UserMS.dto.Roles;
 import com.hms.user.UserMS.dto.UserDTO;
 import com.hms.user.UserMS.entity.User;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service("userService")
@@ -81,5 +84,12 @@ public class UserServiceImpl implements UserService {
             return profileClient.getPatient(id);
         }
         throw new HmsException("INVALID_USER_ROLE");
+    }
+
+    @Override
+    public RegistrationCountsDTO getMonthlyRegistrationCounts() {
+        List<MonthlyRoleCountDTO> doctorsCounts = userRepository.countRegistrationByRoleGroupedByMonth(Roles.DOCTOR);
+        List<MonthlyRoleCountDTO> patientCounts = userRepository.countRegistrationByRoleGroupedByMonth(Roles.PATIENT);
+        return new RegistrationCountsDTO(doctorsCounts, patientCounts);
     }
 }

@@ -18,5 +18,10 @@ const getUserProfile = async(id:any) =>{
     .catch((error:any) => {throw error;})
 }
 
+const getRegistrationCounts = async() => {
+    return axiosInstance.get("/users/getRegistrationCounts")
+        .then((response:any) => response.data)
+        .catch((error:any) => {throw error;})
+}
 
-export {registerUser, loginUser, getUserProfile}
+export {registerUser, loginUser, getUserProfile, getRegistrationCounts}

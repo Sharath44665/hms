@@ -2,6 +2,7 @@ package com.hms.user.UserMS.api;
 
 import com.hms.user.UserMS.client.Profile;
 import com.hms.user.UserMS.dto.LoginDTO;
+import com.hms.user.UserMS.dto.RegistrationCountsDTO;
 import com.hms.user.UserMS.dto.ResponseDTO;
 import com.hms.user.UserMS.dto.UserDTO;
 import com.hms.user.UserMS.exception.HmsException;
@@ -62,6 +63,11 @@ public class UserAPI {
     @GetMapping("/getProfile/{id}")
     public ResponseEntity<Long> getProfile(@PathVariable Long id) throws HmsException {
         return new ResponseEntity<>(userService.getProfile(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/getRegistrationCounts")
+    public ResponseEntity<RegistrationCountsDTO> getMonthlyRegistrationCounts() throws HmsException {
+        return new ResponseEntity<>(userService.getMonthlyRegistrationCounts(), HttpStatus.OK);
     }
 
     @GetMapping("/test")

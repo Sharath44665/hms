@@ -29,4 +29,19 @@ const formatDateWithtime = (dateString: any) => {
     return date.toLocaleDateString("en-Us", options)
 
 }
-export {formatDate, formatDateWithtime}
+
+const extractTimeIn12HourFormat = (dateString: any) => {
+    if(!dateString) return undefined
+
+    const date = new Date(dateString);
+
+    const options : Intl.DateTimeFormatOptions = {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+    };
+
+    return date.toLocaleTimeString("en-Us", options)
+}
+
+export {formatDate, formatDateWithtime, extractTimeIn12HourFormat}

@@ -1,7 +1,18 @@
 import { ScrollArea } from '@mantine/core';
-import { doctors } from '../../../data/DashboardData'; 
+import { useEffect, useState } from 'react'; 
+import { getAllDoctors } from '../../../Service/DoctorProfileService';
 
 const Doctors = () => {
+    const [doctors, setDoctors] = useState<any[]>([])
+    
+        useEffect(()=>{
+            getAllDoctors().then((data) =>{
+                console.log(data)
+                setDoctors(data)
+            }).catch((error) =>{
+                console.log(error)
+            })
+        },[])
 
     const card = (app: any) => {
         return <div className={`p-3 mb-3 border rounded-xl justify-between border-l-4 border-violet-500 shadow-md flex bg-violet-100`}>
@@ -10,7 +21,7 @@ const Doctors = () => {
                 <div className='text-sm text-gray-500'>{app.email}</div>
             </div>
             <div className='text-right'>
-                <div className='text-sm text-gray-500'>{app.location}</div>
+                <div className='text-sm text-gray-500'>{app.address}</div>
                 <div className='text-sm text-gray-500'>{app.department}</div>
             </div>
         </div>

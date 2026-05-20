@@ -74,4 +74,53 @@ const getMedicinesByPrescriptionId = async (prescriptionId: any) => {
         .then((response:any) => response.data)
         .catch((error:any) => {throw error;})
 }
-export { scheduleAppointment, cancelAppointment, getAppointment, getAppointmentDetails, getAppointmentsByPatient, getAppointmentsByDoctor, createAppointmentReport, isReportExists, getReportsByPatientId, getPrescriptionsByPatientId, getAllPrescriptions, getMedicinesByPrescriptionId }
+
+const countAppointmentsByPatient = async (patientId: any) =>{
+    return axiosInstance.get(`/appointment/countByPatient/${patientId}`)
+        .then((response:any) => response.data)
+        .catch((error:any) => {throw error;})
+}
+
+const countAppointmentsByDoctor = async (doctorId: any) =>{
+    return axiosInstance.get(`/appointment/countByDoctor/${doctorId}`)
+        .then((response:any) => response.data)
+        .catch((error:any) => {throw error;})
+}
+
+const countAllAppointments = async () =>{
+    return axiosInstance.get(`/appointment/visitCount`)
+        .then((response:any) => response.data)
+        .catch((error:any) => {throw error;})
+}
+
+const countReasonsByPatient = async(patientId: any) => { 
+    return axiosInstance.get(`/appointment/countReasonByPatient/${patientId}`)
+        .then((response:any) => response.data)
+        .catch((error:any) => {throw error;})
+}
+
+const countReasonsByDoctor = async (doctorId: any) =>{
+    return axiosInstance.get(`/appointment/countReasonByDoctor/${doctorId}`)
+        .then((response:any) => response.data)
+        .catch((error:any) => {throw error;})
+}
+
+const countAllReasons = async () =>{
+    return axiosInstance.get(`/appointment/countReasons`)
+        .then((response:any) => response.data)
+        .catch((error:any) => {throw error;})
+}
+
+const getMedicinesConsumedByPatient = async(patientId: any) => { 
+    return axiosInstance.get(`/appointment/getMedicinesByPatient/${patientId}`)
+        .then((response:any) => response.data)
+        .catch((error:any) => {throw error;})
+}
+
+const getTodaysAppointments = async () =>{
+    return axiosInstance.get(`/appointment/today`)
+        .then((response:any) => response.data)
+        .catch((error:any) => {throw error;})
+}
+
+export { scheduleAppointment, cancelAppointment, getAppointment, getAppointmentDetails, getAppointmentsByPatient, getAppointmentsByDoctor, createAppointmentReport, isReportExists, getReportsByPatientId, getPrescriptionsByPatientId, getAllPrescriptions, getMedicinesByPrescriptionId, countAppointmentsByPatient, countAppointmentsByDoctor, countAllAppointments, countReasonsByPatient, countReasonsByDoctor, countAllReasons, getMedicinesConsumedByPatient, getTodaysAppointments }

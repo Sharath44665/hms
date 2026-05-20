@@ -1,15 +1,12 @@
-import { ActionIcon, Button, Fieldset, MultiSelect, NumberInput, Select, Textarea, TextInput } from "@mantine/core";
-import { dosageFrequencies, medicalTests, medicineCategories, medicineTypes, symptoms } from "../../../data/DropdownData";
-import { IconEdit, IconEye, IconSearch, IconTrash } from "@tabler/icons-react";
+import { ActionIcon, Button, Fieldset, NumberInput, Select, TextInput } from "@mantine/core";
+import { medicineCategories, medicineTypes } from "../../../data/DropdownData";
+import { IconEdit, IconSearch } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
-import { createAppointmentReport, getReportsByPatientId, isReportExists } from "../../../Service/AppointmentService";
 import { errorNotification, successNotification } from "../../../Utility/NotificationUtil";
-import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { DataTable, type DataTableFilterMeta } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { FilterMatchMode } from "primereact/api";
-import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../../Utility/DateUtility";
 import { addMedicine, getAllMedicines, updateMedicine } from "../../../Service/MedicineService";
 import { capitalizeFirstLetter } from "../../../Utility/OtherUtility";
@@ -81,6 +78,8 @@ const Medicine = () => {
 
         
     }
+
+    
 
     const onEdit = (rowData:any) =>{
         setEdit(true);

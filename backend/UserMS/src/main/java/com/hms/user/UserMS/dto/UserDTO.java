@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,8 +25,10 @@ public class UserDTO {
     private String password;
     private Roles role;
     private Long profileId;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public User toEntity(){
-        return new User(this.id, this.name, this.email, this.password, this.role, this.profileId);
+        return new User(this.id, this.name, this.email, this.password, this.role, this.profileId,  this.createdAt, this.updatedAt);
     }
 }
