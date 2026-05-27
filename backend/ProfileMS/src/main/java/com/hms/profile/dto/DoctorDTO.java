@@ -20,12 +20,12 @@ public class DoctorDTO {
     private String phone;
     private String address;
     private String licenseNo;
-    private String specilaization;
+    private String specialization;
     private String department;
     private Integer totalExp;
 
     public Doctor toEntity() {
         return new Doctor(this.id, this.name, this.email, this.dob, this.profilePictureId, this.phone, this.address, this.licenseNo,
-                this.specilaization, this.department, this.totalExp);
+                this.specialization, this.department, this.totalExp);
     }
 }

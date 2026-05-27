@@ -19,8 +19,7 @@ const Topcards = () => {
             console.log(err)
         })
 
-        getRegistrationCounts().then((res)=> {
-            console.log(res)
+        getRegistrationCounts().then((res)=> { 
             setPtData(addZeroMonths(res.patientCounts, "month", "count"))
             setDrData(addZeroMonths(res.doctorCounts, "month", "count"))
         }).catch((err)=> {

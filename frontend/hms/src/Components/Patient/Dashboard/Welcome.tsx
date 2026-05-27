@@ -3,9 +3,12 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getUserProfile } from "../../../Service/UserService";
 import useProtectedImage from "../../Utilities/Dropzone/useProtectedImage";
+import { getPatient } from "../../../Service/PatientProfileService";
+import { bloodGroupMap } from "../../../data/DropdownData";
 
 const Welcome = () => {
     const user = useSelector((state: any) => state.user)
+    const [patientInfo, setPatientInfo] = useState<any>({})
     const [picId, setPicId] = useState<string | null>(null)
 
     useEffect(() => {
@@ -14,6 +17,12 @@ const Welcome = () => {
             setPicId(data);
         }).catch((error) => {
             console.log(error);
+        })
+
+        getPatient(user.profileId).then((data) =>{
+            setPatientInfo(data) 
+        }).catch((error)=>{
+            console.log(error)
         })
     }, [])
 
@@ -24,7 +33,7 @@ const Welcome = () => {
                 <div>
                     <div> Welcome Back </div>
                     <div className="text-3xl font-semibold text-blue-600">{user.name} ! </div>
-                    <div className="text-sm">A+, India</div>
+                    <div className="text-sm">{bloodGroupMap[patientInfo.bloodGroup]}, {patientInfo.address}</div>
                 </div>
                 <Avatar src={url} variant='filled' alt="it's me" size={100} />
             </div>

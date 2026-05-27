@@ -1,17 +1,30 @@
 import { ScrollArea } from '@mantine/core';
 import { patients } from '../../../data/DashboardData'; 
+import { useEffect, useState } from 'react';
+import { getAllPatients } from '../../../Service/PatientProfileService';
+import { bloodGroupMap } from '../../../data/DropdownData';
 
 const Patients = () => {
+    const [patients, setPatients] = useState<any[]>([])
+        
+            useEffect(()=>{
+                getAllPatients().then((data) =>{
+                    // console.log(data)
+                    setPatients(data)
+                }).catch((error) =>{
+                    console.log(error)
+                })
+            },[])
 
     const card = (app: any) => {
         return <div className={`p-3 mb-3 border rounded-xl justify-between border-l-4 border-red-500 shadow-md flex bg-red-100`}>
-            <div>
+             <div>
                 <div className='font-semibold'>{app.name}</div>
                 <div className='text-sm text-gray-500'>{app.email}</div>
             </div>
             <div className='text-right'>
-                <div className='text-sm text-gray-500'>{app.location}</div>
-                <div className='text-sm text-gray-500'>Blood Group: {app.bloodGroup}</div>
+                <div className='text-sm text-gray-500'>{app.address}</div>
+                <div className='text-sm text-gray-500'>Blood Group: {bloodGroupMap[app.bloodGroup]}</div>
             </div>
         </div>
     }

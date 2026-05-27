@@ -1,6 +1,21 @@
 import { AreaChart } from '@mantine/charts';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { countAppointmentsByDoctor } from '../../../Service/AppointmentService';
+import { addZeroMonths } from '../../../Utility/OtherUtility';
 
 const Metrices = () => {
+    const [appointments, setAppointments] = useState<any[]>([])
+    const user = useSelector((state:any)=> state.user)
+
+    useEffect(()=>{
+        countAppointmentsByDoctor(user.profileId).then((res)=>{
+            console.log(res)
+            setAppointments(addZeroMonths(res, "month", "count"));
+        }).catch((err) => {
+            console.log(err)
+        })
+    },[])
     const data = [
         { date: '2025-01-05', appointments: 12 },
         { date: '2025-02-14', appointments: 27 },
@@ -20,14 +35,14 @@ const Metrices = () => {
                     <div className='font-semibold'>Appointments</div>
                     <div className='text-xs text-gray-500'>Last 7 days</div>
                 </div>
-                <div className='text-2xl font-bold text-violet-500'>{getSum(data, "appointments")} </div>
+                <div className='text-2xl font-bold text-violet-500'>{getSum(appointments, "count")} </div>
             </div>
             <AreaChart
                 h={100}
-                data={data}
-                dataKey="date"
+                data={appointments}
+                dataKey="month"
                 series={[
-                    { name: "appointments", color: "violet" },
+                    { name: "count", color: "violet" },
                     // { name: 'Oranges', color: 'blue.6' },
                     // { name: 'Tomatoes', color: 'teal.6' },
                 ]}

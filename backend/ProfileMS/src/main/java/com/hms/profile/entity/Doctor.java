@@ -2,7 +2,6 @@ package com.hms.profile.entity;
 
 import java.time.LocalDate;
 
-import com.hms.profile.dto.BloodGroup;
 import com.hms.profile.dto.DoctorDTO;
 
 import jakarta.persistence.Column;
@@ -31,12 +30,12 @@ public class Doctor {
     private String address;
     @Column(unique = true)
     private String licenseNo; 
-    private String specilaization;
+    private String specialization;
     private String department;
     private Integer totalExp;
 
     public DoctorDTO toDTO() {
         return new DoctorDTO(this.id, this.name, this.email, this.dob, this.profilePictureId, this.phone, this.address, this.licenseNo,
-                this.specilaization, this.department, this.totalExp);
+                this.specialization, this.department, this.totalExp);
     }
 }
