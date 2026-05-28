@@ -1,2 +1,2 @@
 # issues
-- need to pic profile pic loader in sidebar and topbar
+- need to fix, profile pic loader in sidebar and topbar

@@ -6,7 +6,7 @@ import { Column } from 'primereact/column';
 import { ActionIcon, Button, LoadingOverlay, Modal, SegmentedControl, Select, Text, Textarea } from '@mantine/core';
 import { Tag } from 'primereact/tag';
 import { TextInput } from '@mantine/core';
-import { IconEdit, IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
+import { IconEdit, IconLayoutGrid, IconPlus, IconSearch, IconTable, IconTrash } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { getDoctorDropdown } from '../../../Service/DoctorProfileService';
 import { DateTimePicker } from '@mantine/dates';
@@ -18,6 +18,7 @@ import { errorNotification, successNotification } from '../../../Utility/Notific
 import { formatDateWithtime } from '../../../Utility/DateUtility';
 import { modals } from '@mantine/modals';
 import { Toolbar } from 'primereact/toolbar';
+import ApCard from './ApCard';
 // import { CustomerService } from './service/CustomerService';
 
 interface Country {
@@ -44,6 +45,7 @@ interface Customer {
 }
 
 const Appointment = () => {
+    const [view, setView] = useState("table");
     const [opened, { open, close }] = useDisclosure(false);
     const [loading, setLoading] = useState(false)
     const [tab, setTab] = useState<string>("Today")
@@ -231,7 +233,18 @@ const Appointment = () => {
     };
 
     const rightToolbarTemplate = () => {
-        return <TextInput leftSection={<IconSearch />} fw={500} value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
+        return <div className='flex gap-5 items-center'>
+            <SegmentedControl
+                value={view}
+                color='primary'
+                onChange={setView}
+                data={[
+                    { label: <IconTable />, value: 'table' },
+                    { label: <IconLayoutGrid />, value: 'card' },
+                ]}
+            />
+            <TextInput leftSection={<IconSearch />} fw={500} value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
+        </div>
     };
 
     const centerToolbarTemplate = () => {
@@ -251,9 +264,9 @@ const Appointment = () => {
     const filteredAppointments = appointments.filter((appointment) => {
         const appointmentDate = new Date(appointment.appointmentTime)
         const today = new Date()
-        today.setHours(0,0, 0, 0)
+        today.setHours(0, 0, 0, 0)
         const appointmentDay = new Date(appointmentDate);
-        appointmentDay.setHours(0,0,0,0)
+        appointmentDay.setHours(0, 0, 0, 0)
         if (tab === "Today") {
             return appointmentDay.getTime() === today.getTime();
         } else if (tab === "Upcoming") {
@@ -266,12 +279,12 @@ const Appointment = () => {
     return (
         <div className="card">
             <Toolbar className="mb-4" start={leftToolbarTemplate} center={centerToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
-            <DataTable value={filteredAppointments} stripedRows size='small' paginator rows={10}
+            {view == "table" ? <DataTable value={filteredAppointments} stripedRows size='small' paginator rows={10}
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 rowsPerPageOptions={[10, 25, 50]} dataKey="id"
 
                 filters={filters} filterDisplay="menu" globalFilterFields={['doctorName', 'reason', 'notes', 'status']}
-                emptyMessage="No customers found." currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+                emptyMessage="No Appointments found." currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
                 <Column field="doctorName" header="Doctor" sortable filter filterPlaceholder="Search by name" style={{ minWidth: '14rem' }} />
                 <Column field="appointmentTime" header="Appointment Time" sortable filterPlaceholder="Search by name" style={{ minWidth: '14rem' }} body={timeTemplate} />
                 <Column field="reason" header="Reason" sortable filter filterPlaceholder="Search by name" style={{ minWidth: '14rem' }} />
@@ -279,7 +292,11 @@ const Appointment = () => {
                 <Column field="status" header="Status" sortable filterMenuStyle={{ width: '14rem' }} style={{ minWidth: '12rem' }} body={statusBodyTemplate} filter />
 
                 <Column headerStyle={{ width: '5rem', textAlign: 'center' }} bodyStyle={{ textAlign: 'center', overflow: 'visible' }} body={actionBodyTemplate} />
-            </DataTable>
+            </DataTable> : <div className='grid grid-cols-4 gap-5'>{
+                filteredAppointments.map((appointment) => (<ApCard key={appointment.id} {...appointment} />))
+            }{
+                    filteredAppointments.length === 0 && <div className='col-span-4 text-center text-gray-500'>No Appointment Found</div>
+                }</div>} 
 
             <Modal opened={opened} size={"lg"} onClose={close} title={<div className='text-xl font-semibold text-primary-700'>Schedule Appointment</div>} centered>
                 <LoadingOverlay visible={loading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />

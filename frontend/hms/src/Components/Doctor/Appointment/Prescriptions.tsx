@@ -1,5 +1,5 @@
-import { ActionIcon, Badge, Card, Divider, Group, Modal, Stack, Text, TextInput } from "@mantine/core";
-import { IconEye, IconMedicineSyrup, IconSearch } from "@tabler/icons-react";
+import { ActionIcon, Badge, Card, Divider, Group, Modal, SegmentedControl, Stack, Text, TextInput } from "@mantine/core";
+import { IconEye, IconLayoutGrid, IconMedicineSyrup, IconSearch, IconTable } from "@tabler/icons-react";
 import { FilterMatchMode } from "primereact/api";
 import { Column } from "primereact/column";
 import { DataTable, type DataTableFilterMeta } from "primereact/datatable";
@@ -8,8 +8,11 @@ import { getPrescriptionsByPatientId } from "../../../Service/AppointmentService
 import { formatDate } from "../../../Utility/DateUtility";
 import { useNavigate } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
+import { Toolbar } from "primereact/toolbar";
+import PresCard from "./PresCard";
 
 const Prescriptions = ({ appointment }: any) => {
+    const [view, setView] = useState("table");
     const [data, setData] = useState<any[]>([])
     const [opened, { open, close }] = useDisclosure(false)
     const [medicineData, setMedicineData] = useState<any[]>([])
@@ -50,9 +53,18 @@ const Prescriptions = ({ appointment }: any) => {
         setMedicineData(medicine)
     }
 
-    const renderHeader = () => {
+    const rightToolbarTemplate = () => {
         return (
             <div className="flex flex-wrap gap-2 justify-end items-center">
+                <SegmentedControl
+                    value={view}
+                    color='primary'
+                    onChange={setView}
+                    data={[
+                        { label: <IconTable />, value: 'table' },
+                        { label: <IconLayoutGrid />, value: 'card' },
+                    ]}
+                />
                 <TextInput leftSection={<IconSearch />} fw={500} value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
 
             </div>
@@ -72,11 +84,11 @@ const Prescriptions = ({ appointment }: any) => {
         </div>;
     };
 
-    const header = renderHeader()
 
     return (
         <div>
-            <DataTable header={header} value={data} stripedRows size='small' paginator rows={10}
+            <Toolbar className="mb-4 !p-1" end={rightToolbarTemplate}></Toolbar>
+            {view == "table" ? <DataTable value={data} stripedRows size='small' paginator rows={10}
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 rowsPerPageOptions={[10, 25, 50]} dataKey="id"
 
@@ -88,7 +100,11 @@ const Prescriptions = ({ appointment }: any) => {
                 <Column field="notes" header="Notes" style={{ minWidth: '14rem' }} />
                 <Column headerStyle={{ width: "5rem", textAlign: "center" }} bodyStyle={{ textAlign: "center", overflow: "visible" }} body={actionBodyTemplate} />
 
-            </DataTable>
+            </DataTable> : <div className='grid grid-cols-4 gap-5'>{
+                data?.map((appointment) => (<PresCard key={appointment.id} handleMedicine={handleMedicine} {...appointment} />))
+            }{
+                    data.length === 0 && <div className='col-span-4 text-center text-gray-500'>No Prescriptions Found</div>
+                }</div>}
             <Modal opened={opened} size="xl" onClose={close} title="Medicines" centered>
                 <div className="grid grid-cols-3 gap-5">
                     {

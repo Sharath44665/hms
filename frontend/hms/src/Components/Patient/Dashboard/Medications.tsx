@@ -12,12 +12,12 @@ const Medications = () => {
 
     useEffect(()=>{
         getMedicinesConsumedByPatient(user.profileId).then((res)=> {
-            console.log(res)
+            // console.log(res)
             setData(res)
         }).catch((err)=>{
             console.log(err)
         })
-    },[])
+    },[])   
     const card = (app: any) => {
         return <div className={`p-3 mb-3 border rounded-xl justify-between border-l-4 border-orange-500 shadow-md flex bg-orange-100 items-center`}>
             <div>

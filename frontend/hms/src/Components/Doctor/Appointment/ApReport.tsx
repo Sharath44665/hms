@@ -1,6 +1,6 @@
-import { ActionIcon, Button, Fieldset, Group, MultiSelect, NumberInput, Select, Textarea, TextInput, type SelectProps } from "@mantine/core";
+import { ActionIcon, Button, Fieldset, Group, MultiSelect, NumberInput, SegmentedControl, Select, Textarea, TextInput, type SelectProps } from "@mantine/core";
 import { dosageFrequencies, medicalTests, medicineTypes, symptoms } from "../../../data/DropdownData";
-import { IconCheck, IconEye, IconSearch, IconTrash } from "@tabler/icons-react";
+import { IconCheck, IconLayoutGrid, IconSearch, IconTable, IconTrash } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { createAppointmentReport, getReportsByPatientId, isReportExists } from "../../../Service/AppointmentService";
 import { errorNotification, successNotification } from "../../../Utility/NotificationUtil";
@@ -12,6 +12,8 @@ import { FilterMatchMode } from "primereact/api";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../../Utility/DateUtility";
 import { getAllMedicines } from "../../../Service/MedicineService";
+import { Toolbar } from "primereact/toolbar";
+import ReportCard from "./ReportCard";
 
 type Medicine = {
     name: string,
@@ -48,6 +50,7 @@ const ApReport = ({ appointment }: any) => {
     const [edit, setEdit] = useState<boolean>(false)
     const [loading, setLoading] = useState(false);
     const [medicine, setMedicine] = useState<any[]>([])
+    const [view, setView] = useState("table");
 
     const [medicineMap, setMedicineMap] = useState<Record<string, any>>({})
     const form = useForm({
@@ -142,9 +145,9 @@ const ApReport = ({ appointment }: any) => {
             prescription: {
                 medicines: values.prescription.medicines.map(med => ({
                     ...med,
-                    medicineId: med.medicineId === "OTHER"? null : med.medicineId
+                    medicineId: med.medicineId === "OTHER" ? null : med.medicineId
                 })),
-            
+
                 doctorId: appointment.doctorId,
                 patientId: appointment.patientId,
                 appointmentId: appointment.id,
@@ -165,21 +168,23 @@ const ApReport = ({ appointment }: any) => {
         })
     }
 
-    const handleChangeMed = (medId: any, index:number) =>{
+    const handleChangeMed = (medId: any, index: number) => {
         // console.log("medicine at index: ", index)
         // console.log("current medicine id: ",value );
-        
-        if(medId && medId != "OTHER"){
+
+        if (medId && medId != "OTHER") {
             form.setFieldValue(`prescription.medicines.${index}.medId`, medId);
             // console.log("selected medicine id: ", medId, medicineMap[medId])
             form.setFieldValue(`prescription.medicines.${index}.name`, medicineMap[medId]?.name || '');
             form.setFieldValue(`prescription.medicines.${index}.dosage`, medicineMap[medId]?.dosage || '');
-            form.setFieldValue(`prescription.medicines.${index}.type`, medicineMap[medId]?.type|| '');
-        }else{
+            form.setFieldValue(`prescription.medicines.${index}.type`, medicineMap[medId]?.type || '');
+            // form.setFieldValue(`prescription.medicines.${index}.instructions`, medicineMap[medId]?.instructions|| '')
+        } else {
             form.setFieldValue(`prescription.medicines.${index}.medicineId`, "OTHER");
             form.setFieldValue(`prescription.medicines.${index}.name`, medicineMap[medId]?.name || null);
             form.setFieldValue(`prescription.medicines.${index}.dosage`, medicineMap[medId]?.dosage || null);
-            form.setFieldValue(`prescription.medicines.${index}.type`, medicineMap[medId]?.type|| null);
+            form.setFieldValue(`prescription.medicines.${index}.type`, medicineMap[medId]?.type || null);
+            // form.setFieldValue(`prescription.medicines.${index}.instructions`, medicineMap[medId]?.instructions|| null)
 
         }
     }
@@ -207,12 +212,34 @@ const ApReport = ({ appointment }: any) => {
         </div>;
     };
 
+    const startToolbarTemplate = () => {
+        return allowAdd && <Button variant="filled" onClick={() => setEdit(true)}>Add Report</Button>
+    }
+
+    const rightToolbarTemplate = () => {
+        return (
+            <div className="flex flex-wrap gap-2 justify-end items-center">
+                <SegmentedControl
+                    value={view}
+                    color='primary'
+                    onChange={setView}
+                    data={[
+                        { label: <IconTable />, value: 'table' },
+                        { label: <IconLayoutGrid />, value: 'card' },
+                    ]}
+                />
+                <TextInput leftSection={<IconSearch />} fw={500} value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
+
+            </div>
+        );
+    };
+
     const header = renderHeader()
     return (
         <div>
             {
-                !edit ?
-                    <DataTable header={header} value={data} stripedRows size='small' paginator rows={10}
+                !edit ? <div> <Toolbar className="mb-4 !p-1" start={startToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
+                   {view=="table"? <DataTable value={data} stripedRows size='small' paginator rows={10}
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         rowsPerPageOptions={[10, 25, 50]} dataKey="id"
 
@@ -225,7 +252,11 @@ const ApReport = ({ appointment }: any) => {
                         <Column field="notes" header="Notes" />
                         <Column headerStyle={{ width: "5rem", textAlign: "center" }} bodyStyle={{ textAlign: "center", overflow: "visible" }} body={actionBodyTemplate} />
 
-                    </DataTable> :
+                    </DataTable>:<div className='grid grid-cols-4 gap-5'>{
+                        data?.map((appointment) => (<ReportCard key={appointment.id} {...appointment} />))
+                    }{
+                            data.length === 0 && <div className='col-span-4 text-center text-gray-500'>No Appointment Found</div>
+                        }</div> }</div> :
                     <form onSubmit={form.onSubmit(handleSubmit)} className="grid gap-5">
                         <Fieldset className="grid gap-4 grid-cols-2" legend={<span className="text-lg font-medium text-primary-500">Personal information</span>} radius="md">
                             <MultiSelect {...form.getInputProps("symptoms")} className="col-span-2" withAsterisk
@@ -257,7 +288,7 @@ const ApReport = ({ appointment }: any) => {
                                             </ActionIcon>
                                         </div>
 
-                                        <Select renderOption={renderSelectOption} {...form.getInputProps(`prescription.medicines.${index}.medicineId`)} label="Medicine" placeholder="Select Medicine" onChange={(value:any) => handleChangeMed( value, index)} data={
+                                        <Select renderOption={renderSelectOption} {...form.getInputProps(`prescription.medicines.${index}.medicineId`)} label="Medicine" placeholder="Select Medicine" onChange={(value: any) => handleChangeMed(value, index)} data={
                                             [...medicine.filter((x: any) => !form.values.prescription.medicines.some((item1: any, idx) => item1.medicineId == x.id && idx != index)).map(item => ({ ...item, value: "" + item.id, label: item.name })), { label: "Other", value: "OTHER" }]
                                         } withAsterisk />
 
