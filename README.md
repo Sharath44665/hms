@@ -1,8 +1,11 @@
 ## HMS
 
-> only 3 videos are left, majority of the code are already completed, feel free to refer this repo
+> at this moment working on Responsive Design
 
-Hospital Management System project
+### Hospital Management System project Screnshots
 
-- Working on this project
-- trying to finish this project ASAP.
+![adminpage](./img/adminPage.png)
+
+![doctorPage](./img/doctorPage.png)
+
+![patientPage](./img/patientPage.png)

@@ -173,7 +173,7 @@ const Medicine = () => {
     return (
         <div>
             {
-                !edit ? <div><Toolbar className="mb-4 !p-1" start={startToolbarTemplate} end={rightToolbarTemplate} ></Toolbar>
+                !edit ? <div><Toolbar className="mb-4 !p-1"  end={rightToolbarTemplate} ></Toolbar>
                     {view == "table" ? <DataTable  value={data} stripedRows size='small' paginator rows={10}
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         rowsPerPageOptions={[10, 25, 50]} dataKey="id"
@@ -188,10 +188,10 @@ const Medicine = () => {
                         <Column field="type" header="Type" body={rowData => capitalizeFirstLetter(rowData.type)} />
                         <Column field="manufacturer" header="Manufacturer" />
                         <Column field="unitPrice" header="Unit Price ₹" sortable />
-                        <Column headerStyle={{ width: "5rem", textAlign: "center" }} bodyStyle={{ textAlign: "center", overflow: "visible" }} body={actionBodyTemplate} />
+                        {/* <Column headerStyle={{ width: "5rem", textAlign: "center" }} bodyStyle={{ textAlign: "center", overflow: "visible" }} body={actionBodyTemplate} /> */}
 
                     </DataTable> : <div className='grid grid-cols-4 gap-5'>{
-                        data?.map((appointment) => (<MedCard key={appointment.id} {...appointment} onEdit={()=>onEdit(appointment)} />))
+                        data?.map((appointment) => (<MedCard key={appointment.id} {...appointment}  />))
                     }{
                             data.length === 0 && <div className='col-span-4 text-center text-gray-500'>No Medicines Found</div>
                         }</div>} </div> :

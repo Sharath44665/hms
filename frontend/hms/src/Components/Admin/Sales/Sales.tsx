@@ -1,5 +1,5 @@
-import { ActionIcon, Badge, Button, Card, Divider, Fieldset, Group, LoadingOverlay, Modal, NumberInput, Select, Stack, Text, TextInput, type SelectProps } from "@mantine/core";
-import { IconCheck, IconEye, IconHome, IconPlus, IconSearch, IconTrash } from "@tabler/icons-react";
+import { ActionIcon, Badge, Button, Card, Divider, Fieldset, Group, LoadingOverlay, Modal, NumberInput, SegmentedControl, Select, Stack, Text, TextInput, type SelectProps } from "@mantine/core";
+import { IconCheck, IconEye, IconHome, IconLayoutGrid, IconPlus, IconSearch, IconTable, IconTrash } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { errorNotification, successNotification } from "../../../Utility/NotificationUtil";
 import { useEffect, useState } from "react";
@@ -16,6 +16,8 @@ import { useDisclosure } from "@mantine/hooks";
 import { Spotlight, type SpotlightActionData, spotlight } from '@mantine/spotlight';
 import { getAllPrescriptions, getMedicinesByPrescriptionId } from "../../../Service/AppointmentService";
 import { freqMap } from "../../../data/DropdownData";
+import { Toolbar } from "primereact/toolbar";
+import SaleCard from "./SaleCard";
 
 interface SaleItem {
     medicineId: string;
@@ -45,6 +47,7 @@ const Sales = () => {
 
     const [edit, setEdit] = useState<boolean>(false)
     const [loading, setLoading] = useState(false);
+    const [view, setView] = useState("table");
     const [medicineMap, setMedicineMap] = useState<Record<string, any>>({})
     const [opened, { open, close }] = useDisclosure(false);
     const [saleItems, setSaleItems] = useState<any[]>([]);
@@ -100,7 +103,7 @@ const Sales = () => {
             setSaleItems(res);
             form.setValues({
                 buyerName: item.patientName,
-                saleItems: res.filter((x:any) => x.medicineId != null).map((x: any) => ({ medicineId: String(x.medicineId), quantity: calculateQuantity(x.frequency, x.duration) }))
+                saleItems: res.filter((x: any) => x.medicineId != null).map((x: any) => ({ medicineId: String(x.medicineId), quantity: calculateQuantity(x.frequency, x.duration) }))
             })
             console.table(res);
         }).catch((err) => {
@@ -110,8 +113,8 @@ const Sales = () => {
         })
     }
 
-    const calculateQuantity = (freq:string, duration:number) => {
-        const freqValue = freqMap[freq] || 0; 
+    const calculateQuantity = (freq: string, duration: number) => {
+        const freqValue = freqMap[freq] || 0;
         return Math.ceil(freqValue * duration)
     }
 
@@ -167,13 +170,13 @@ const Sales = () => {
     const handleSubmit = (values: typeof form.values) => {
         let update = false;
         let flag = false;
-        values.saleItems.forEach((item:any, index:number) =>{
-            if (item.quantity > (medicineMap[item.medicineId].stock || 0)){
+        values.saleItems.forEach((item: any, index: number) => {
+            if (item.quantity > (medicineMap[item.medicineId].stock || 0)) {
                 flag = true;
                 form.setFieldError(`saleItems.${index}.quantity`, `quantity exceeds available stock `);
             }
         })
-        if (flag){
+        if (flag) {
             errorNotification(`quantity exceeds available stock `);
             return;
         }
@@ -202,6 +205,30 @@ const Sales = () => {
 
                     <Button variant="filled" onClick={() => setEdit(true)}>Sell Medicine</Button>
                 }
+                <TextInput leftSection={<IconSearch />} fw={500} value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
+
+            </div>
+        );
+    };
+
+    const startToolbarTemplate = () => {
+        return (
+            <Button variant="filled" onClick={() => setEdit(true)} >Add Medicine</Button>
+        )
+    }
+
+    const rightToolbarTemplate = () => {
+        return (
+            <div className="flex flex-wrap gap-2 justify-end items-center">
+                <SegmentedControl
+                    value={view}
+                    color='primary'
+                    onChange={setView}
+                    data={[
+                        { label: <IconTable />, value: 'table' },
+                        { label: <IconLayoutGrid />, value: 'card' },
+                    ]}
+                />
                 <TextInput leftSection={<IconSearch />} fw={500} value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
 
             </div>
@@ -248,24 +275,29 @@ const Sales = () => {
     return (
         <div>
             {
-                !edit ?
-                    <DataTable header={header} removableSort value={data} stripedRows size='small' paginator rows={10}
-                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        rowsPerPageOptions={[10, 25, 50]} dataKey="id"
+                !edit ? <div><Toolbar className="mb-4 !p-1" start={startToolbarTemplate} end={rightToolbarTemplate} ></Toolbar>
+                    {view == "table" ?
+                        <DataTable removableSort value={data} stripedRows size='small' paginator rows={10}
+                            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                            rowsPerPageOptions={[10, 25, 50]} dataKey="id"
 
-                        filters={filters} filterDisplay="menu" globalFilterFields={['doctorName', 'notes']}
-                        emptyMessage="No customers found." currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
-                        <Column field="buyerName" header="Buyer" />
-                        <Column field="buyerContact" header="Contact" />
-                        {/* <Column field="Prescription" header="Pris" /> */}
-                        <Column field="totalAmount" header="Total Amount" sortable />
-                        <Column field="saleDate" header="Sale Date" sortable body={rowData => formatDate(rowData.saleDate)} />
+                            filters={filters} filterDisplay="menu" globalFilterFields={['doctorName', 'notes']}
+                            emptyMessage="No customers found." currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+                            <Column field="buyerName" header="Buyer" />
+                            <Column field="buyerContact" header="Contact" />
+                            {/* <Column field="Prescription" header="Pris" /> */}
+                            <Column field="totalAmount" header="Total Amount" sortable />
+                            <Column field="saleDate" header="Sale Date" sortable body={rowData => formatDate(rowData.saleDate)} />
 
 
 
-                        <Column headerStyle={{ width: "5rem", textAlign: "center" }} bodyStyle={{ textAlign: "center", overflow: "visible" }} body={actionBodyTemplate} />
+                            <Column headerStyle={{ width: "5rem", textAlign: "center" }} bodyStyle={{ textAlign: "center", overflow: "visible" }} body={actionBodyTemplate} />
 
-                    </DataTable> :
+                        </DataTable> : <div className='grid grid-cols-4 gap-5'>{
+                            data?.map((appointment) => (<SaleCard key={appointment.id} {...appointment} onView={() => handleDetails(appointment)} />))
+                        }{
+                                data.length === 0 && <div className='col-span-4 text-center text-gray-500'>No Medicines Found</div>
+                            }</div>} </div> :
                     <div>
                         <div className="mb-5 flex items-center justify-between">
                             <h3 className="text-xl text-primary-500 font-medium">Sell Medicine</h3>
@@ -294,7 +326,7 @@ const Sales = () => {
                                                     } />
                                                 </div>
                                                 <div className="col-span-2">
-                                                    <NumberInput rightSectionWidth={80} rightSection={<div className="text-xs flex gap-1 text-white font-medium rounded-md bg-red-400 p-1">Stock: {medicineMap[item.medicineId]?.stock} </div>} {...form.getInputProps(`saleItems.${index}.quantity`)} min={0} max={medicineMap[item.medicineId]?.stock ||0 } clampBehavior="strict" label="Quantity" placeholder="Enter quantity" withAsterisk />
+                                                    <NumberInput rightSectionWidth={80} rightSection={<div className="text-xs flex gap-1 text-white font-medium rounded-md bg-red-400 p-1">Stock: {medicineMap[item.medicineId]?.stock} </div>} {...form.getInputProps(`saleItems.${index}.quantity`)} min={0} max={medicineMap[item.medicineId]?.stock || 0} clampBehavior="strict" label="Quantity" placeholder="Enter quantity" withAsterisk />
 
                                                 </div>
                                                 <div className="flex items-end justify-between">

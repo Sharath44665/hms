@@ -1,23 +1,23 @@
-import { ActionIcon, Badge, Button, Fieldset, Group, NumberInput, Select, TextInput, type SelectProps } from "@mantine/core";
-import { medicineCategories } from "../../../data/DropdownData";
-import { IconCheck, IconEdit, IconSearch } from "@tabler/icons-react";
+import { ActionIcon, Badge, Button, Fieldset, Group, NumberInput, SegmentedControl, Select, TextInput, type SelectProps } from "@mantine/core";
+import { IconCheck, IconEdit, IconLayoutGrid, IconSearch, IconTable } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { errorNotification, successNotification } from "../../../Utility/NotificationUtil";
 import { useEffect, useState } from "react";
 import { DataTable, type DataTableFilterMeta } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { FilterMatchMode } from "primereact/api";
-import { formatDate } from "../../../Utility/DateUtility";
-import { addMedicine, getAllMedicines, updateMedicine } from "../../../Service/MedicineService";
-import { capitalizeFirstLetter } from "../../../Utility/OtherUtility";
+import { getAllMedicines } from "../../../Service/MedicineService";
 import { DateInput } from "@mantine/dates";
 import { addStock, getAllStocks, updateStock } from "../../../Service/InventoryService";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import InvCard from "./InvCard";
+import { Toolbar } from "primereact/toolbar";
 
 
 
 const Inventory = () => {
+    const [view, setView] = useState("table");
     const [filters, setFilters] = useState<DataTableFilterMeta>({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 
@@ -63,10 +63,10 @@ const Inventory = () => {
         getAllMedicines().then((res) => {
             // console.log("Reports Data: ", res)
             setMedicine(res)
-            setMedicineMap(res.reduce((acc:any, item:any)=> {
-                acc[item.id]=item;
+            setMedicineMap(res.reduce((acc: any, item: any) => {
+                acc[item.id] = item;
                 return acc;
-            },{}))
+            }, {}))
         }).catch((err) => {
             console.error("error fetching reports: ", err);
         });
@@ -87,7 +87,7 @@ const Inventory = () => {
     const onEdit = (rowData: any) => {
         setEdit(true);
         form.setValues({
-            ...rowData, 
+            ...rowData,
             medicineId: String(rowData.medicineId),
             batchNo: rowData.batchNo,
             quantity: rowData.quantity,
@@ -130,6 +130,30 @@ const Inventory = () => {
         );
     };
 
+    const startToolbarTemplate = () => {
+        return (
+            <Button variant="filled" onClick={() => setEdit(true)} >Add Medicine</Button>
+        )
+    }
+
+    const rightToolbarTemplate = () => {
+        return (
+            <div className="flex flex-wrap gap-2 justify-end items-center">
+                <SegmentedControl
+                    value={view}
+                    color='primary'
+                    onChange={setView}
+                    data={[
+                        { label: <IconTable />, value: 'table' },
+                        { label: <IconLayoutGrid />, value: 'card' },
+                    ]}
+                />
+                <TextInput leftSection={<IconSearch />} fw={500} value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
+
+            </div>
+        );
+    };
+
     const actionBodyTemplate = (rowData: any) => {
 
         return <div className='flex gap-2'>
@@ -144,46 +168,51 @@ const Inventory = () => {
         setEdit(false);
     }
     const header = renderHeader()
-    const renderSelectOption: SelectProps['renderOption'] = ({ option, checked }:any) => (
+    const renderSelectOption: SelectProps['renderOption'] = ({ option, checked }: any) => (
         <Group flex="1" gap="xs">
             <div className="flex gap-2 items-center">
 
-            {option.label}
-            {option?.manufacturer && <span style={{ marginLeft: 'auto', fontSize: '0.8em', color:'gray'}}>{option.manufacturer}</span>}
+                {option.label}
+                {option?.manufacturer && <span style={{ marginLeft: 'auto', fontSize: '0.8em', color: 'gray' }}>{option.manufacturer}</span>}
             </div>
-            {checked && <IconCheck style={{ marginInlineStart: 'auto' }} />} 
+            {checked && <IconCheck style={{ marginInlineStart: 'auto' }} />}
 
         </Group>
     );
 
-    const statusBody = (rowData:any) => {
-        const isExpired = new  Date(rowData.expiryDate)< new Date();
-        return <Badge color={isExpired? "red": "green"} >{isExpired?"Expired":"Active"} </Badge>
+    const statusBody = (rowData: any) => {
+        const isExpired = new Date(rowData.expiryDate) < new Date();
+        return <Badge color={isExpired ? "red" : "green"} >{isExpired ? "Expired" : "Active"} </Badge>
     }
     return (
         <div>
             {
-                !edit ?
-                    <DataTable header={header} value={data} stripedRows size='small' paginator rows={10}
-                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        rowsPerPageOptions={[10, 25, 50]} dataKey="id"
+                !edit ? <div><Toolbar className="mb-4 !p-1" start={startToolbarTemplate} end={rightToolbarTemplate} ></Toolbar>
+                    {view == "table" ?
+                        <DataTable value={data} stripedRows size='small' paginator rows={10}
+                            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                            rowsPerPageOptions={[10, 25, 50]} dataKey="id"
 
-                        filters={filters} filterDisplay="menu" globalFilterFields={['doctorName', 'notes']}
-                        emptyMessage="No customers found." currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
-                        <Column field="name" header="Medicine" body={(rowdata) =><span >{ medicineMap[""+rowdata.medicineId]?.name} <span className="text-xs text-gray-700">{ medicineMap[""+rowdata.medicineId]?.manufacturer}</span></span>} /> 
-                        <Column field="batchNo" header="Batch No." />
-                        <Column field="initialQuantity" header="Quantity"  />
-                        <Column field="quantity" header="Remaining Quantity" />
-                        <Column field="expiryDate" header="Expiry Date" />
-                        <Column field="status" header="Status" body={statusBody}/>
+                            filters={filters} filterDisplay="menu" globalFilterFields={['doctorName', 'notes']}
+                            emptyMessage="No customers found." currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+                            <Column field="name" header="Medicine" body={(rowdata) => <span >{medicineMap["" + rowdata.medicineId]?.name} <span className="text-xs text-gray-700">{medicineMap["" + rowdata.medicineId]?.manufacturer}</span></span>} />
+                            <Column field="batchNo" header="Batch No." />
+                            <Column field="initialQuantity" header="Quantity" />
+                            <Column field="quantity" header="Remaining Quantity" />
+                            <Column field="expiryDate" header="Expiry Date" />
+                            <Column field="status" header="Status" body={statusBody} />
 
 
-                        <Column headerStyle={{ width: "5rem", textAlign: "center" }} bodyStyle={{ textAlign: "center", overflow: "visible" }} body={actionBodyTemplate} />
+                            <Column headerStyle={{ width: "5rem", textAlign: "center" }} bodyStyle={{ textAlign: "center", overflow: "visible" }} body={actionBodyTemplate} />
 
-                    </DataTable> :
+                        </DataTable> : <div className='grid grid-cols-4 gap-5'>{
+                            data?.map((appointment) => (<InvCard key={appointment.id} medicineMap={medicineMap} {...appointment} onEdit={() => onEdit(appointment)} />))
+                        }{
+                                data.length === 0 && <div className='col-span-4 text-center text-gray-500'>No Medicines Found</div>
+                            }</div>} </div> :
                     <form onSubmit={form.onSubmit(handleSubmit)} className="grid gap-5">
                         <Fieldset className="grid gap-4 grid-cols-2" legend={<span className="text-lg font-medium text-primary-500">Medicine information</span>} radius="md">
-                            <Select renderOption={renderSelectOption} {...form.getInputProps("medicineId")} label="Medicine" placeholder="Select Medicine" data={medicine.map(item => ({...item, value: "" + item.id, label: item.name }))} />
+                            <Select renderOption={renderSelectOption} {...form.getInputProps("medicineId")} label="Medicine" placeholder="Select Medicine" data={medicine.map(item => ({ ...item, value: "" + item.id, label: item.name }))} />
 
                             <TextInput {...form.getInputProps("batchNo")} label="Batch No" placeholder="Enter Batch number" withAsterisk />
                             <NumberInput {...form.getInputProps("quantity")} min={0} clampBehavior="strict" label="Quantity" placeholder="Enter quantity" withAsterisk />
