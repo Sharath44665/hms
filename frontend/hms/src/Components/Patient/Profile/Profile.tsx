@@ -4,7 +4,7 @@ import { IconChecks, IconEdit } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { bloodGroup, bloodGroups } from "../../../data/DropdownData";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { getPatient, updatePatient } from "../../../Service/PatientProfileService";
 import { formatDate } from "../../../Utility/DateUtility";
 import { useForm } from "@mantine/form";
@@ -79,27 +79,28 @@ const Profile = () => {
     }
 
     const url = useProtectedImage(profile.profilePictureId); 
+    const matches = useMediaQuery('(max-width: 768px)');
 
     return (
-        <div className="p-10">
-            <div className="flex justify-between items-center">
+        <div className="md:p-10 p-5">
+            <div className="flex lg:flex-row flex-col justify-between items-center">
                 <div className="flex gap-5 items-center">
                     <div className="flex flex-col items-center gap-3">
-                        <Avatar src={url} variant='filled' alt="it's me" size={150} />
+                        <Avatar src={url} variant='filled' alt="it's me" size={matches? 120: 150} />
                         {
                             editMode &&
                             <Button onClick={open} variant="filled" size="sm" >Upload</Button>
                         }
                     </div>
                     <div className="flex flex-col gap-2">
-                        <div className="text-3xl font-medium text-neutral-900">{user.name} </div>
-                        <div className="text-xl text-neutral-700">{user.email} </div>
+                        <div className="md:text-3xl text-xl  font-medium text-neutral-900">{user.name} </div>
+                        <div className="md:text-xl text-lg text-neutral-700">{user.email} </div>
                     </div>
                 </div>
                 {
                     !editMode ?
-                        <Button type="button" onClick={handleEdit} variant="filled" size="lg" leftSection={<IconEdit />}>Edit</Button> :
-                        <Button onClick={handleSubmit} type="submit" variant="filled" size="lg" leftSection={<IconChecks />}>Save or Submit</Button>
+                        <Button type="button" onClick={handleEdit} variant="filled" size={matches?"sm":"lg"} leftSection={<IconEdit />}>Edit</Button> :
+                        <Button onClick={handleSubmit} type="submit" variant="filled" size={matches?"sm":"lg"} leftSection={<IconChecks />}>Save or Submit</Button>
 
                 }
             </div>
@@ -110,7 +111,7 @@ const Profile = () => {
 
                     <Table.Tbody className="[&>tr]: !mb-3 [&_td]:!w-1/2 ">
                         <Table.Tr>
-                            <Table.Td className="text-xl">Date of Birth</Table.Td>
+                            <Table.Td className="md:font-semibold md:text-xl text-lg font-medium">Date of Birth</Table.Td>
                             {
                                 editMode ?
                                     <Table.Td className="text-xl">
@@ -122,7 +123,7 @@ const Profile = () => {
                             }
                         </Table.Tr>
                         <Table.Tr>
-                            <Table.Td className="text-xl">Phone</Table.Td>
+                            <Table.Td className="md:font-semibold md:text-xl text-lg font-medium">Phone</Table.Td>
                             {
                                 editMode ?
                                     <Table.Td className="text-xl">
@@ -132,7 +133,7 @@ const Profile = () => {
                             }
                         </Table.Tr>
                         <Table.Tr>
-                            <Table.Td className="text-xl">Address</Table.Td>
+                            <Table.Td className="md:font-semibold md:text-xl text-lg font-medium">Address</Table.Td>
                             {
                                 editMode ?
                                     <Table.Td className="text-xl">
@@ -144,7 +145,7 @@ const Profile = () => {
 
                         </Table.Tr>
                         <Table.Tr>
-                            <Table.Td className="text-xl">Aadhar Number</Table.Td>
+                            <Table.Td className="md:font-semibold md:text-xl text-lg font-medium">Aadhar Number</Table.Td>
                             {
                                 editMode ?
                                     <Table.Td className="text-xl">
@@ -154,7 +155,7 @@ const Profile = () => {
                             }
                         </Table.Tr>
                         <Table.Tr>
-                            <Table.Td className="text-xl">Blood Group</Table.Td>
+                            <Table.Td className="md:font-semibold md:text-xl text-lg font-medium">Blood Group</Table.Td>
                             {
                                 editMode ?
                                     <Table.Td className="text-xl">
@@ -165,7 +166,7 @@ const Profile = () => {
 
                         </Table.Tr>
                         <Table.Tr>
-                            <Table.Td className="text-xl">Allergies</Table.Td>
+                            <Table.Td className="md:font-semibold md:text-xl text-lg font-medium">Allergies</Table.Td>
                             {
                                 editMode ?
                                     <Table.Td className="text-xl">
@@ -176,7 +177,7 @@ const Profile = () => {
 
                         </Table.Tr>
                         <Table.Tr>
-                            <Table.Td className="text-xl ">Chronic Disease</Table.Td>
+                            <Table.Td className="md:font-semibold md:text-xl text-lg font-medium">Chronic Disease</Table.Td>
                             {
                                 editMode ?
                                     <Table.Td className="text-xl">
@@ -188,7 +189,7 @@ const Profile = () => {
                     </Table.Tbody>
                 </Table>
             </div>
-            <Modal centered opened={opened} onClose={close} title={<span className="text-xl font-medium">Upload Picture</span>}>
+            <Modal centered opened={opened} onClose={close} title={<span className="md:font-semibold md:text-xl text-lg font-medium">Upload Picture</span>}>
                 <DropzoneButton close={close} form={form} id="profilePictureId" />
             </Modal>
         </div>

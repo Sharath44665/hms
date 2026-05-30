@@ -6,8 +6,8 @@ import { Column } from 'primereact/column';
 import { ActionIcon, Button, LoadingOverlay, Modal, SegmentedControl, Select, Text, Textarea } from '@mantine/core';
 import { Tag } from 'primereact/tag';
 import { TextInput } from '@mantine/core';
-import { IconEdit, IconLayoutGrid, IconPlus, IconSearch, IconTable, IconTrash } from '@tabler/icons-react';
-import { useDisclosure } from '@mantine/hooks';
+import { IconLayoutGrid, IconPlus, IconSearch, IconTable, IconTrash } from '@tabler/icons-react';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { getDoctorDropdown } from '../../../Service/DoctorProfileService';
 import { DateTimePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
@@ -52,6 +52,7 @@ const Appointment = () => {
     const [doctors, setDoctors] = useState<any[]>([])
     const user = useSelector((state: any) => state.user)
     const [appointments, setAppointments] = useState<any[]>([])
+    const matches = useMediaQuery('(max-width: 768px)');
     const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
     const [filters, setFilters] = useState<DataTableFilterMeta>({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -194,9 +195,9 @@ const Appointment = () => {
     const actionBodyTemplate = (rowData: any) => {
 
         return <div className='flex gap-2'>
-            <ActionIcon>
+            {/* <ActionIcon>
                 <IconEdit stroke={1.4} />
-            </ActionIcon>
+            </ActionIcon> */}
             <ActionIcon color='red' onClick={() => openDeleteModal(rowData)}>
                 <IconTrash stroke={1.4} />
             </ActionIcon>
@@ -228,28 +229,30 @@ const Appointment = () => {
 
     const leftToolbarTemplate = () => {
         return (
-            <Button leftSection={<IconPlus />} onClick={open} variant="filled">Schedule Appointment</Button>
+            <Button leftSection={<IconPlus />} size={matches?'xs':'md'} onClick={open} variant="filled">Schedule Appointment</Button>
         );
     };
 
     const rightToolbarTemplate = () => {
-        return <div className='flex gap-5 items-center'>
+        return <div className='md:flex hidden gap-5 items-center'>
             <SegmentedControl
                 value={view}
                 color='primary'
+                size={matches?'xs':'md'}
                 onChange={setView}
                 data={[
                     { label: <IconTable />, value: 'table' },
                     { label: <IconLayoutGrid />, value: 'card' },
                 ]}
             />
-            <TextInput leftSection={<IconSearch />} fw={500} value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
+            <TextInput className='lg:block hidden' leftSection={<IconSearch />} fw={500} value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
         </div>
     };
 
     const centerToolbarTemplate = () => {
         return <SegmentedControl
             value={tab}
+            size={matches?'xs':'md'}
             onChange={setTab}
             variant='filled'
             color={tab === "Today" ? "blue" : tab === "Upcoming" ? "green" : "red"}
@@ -278,8 +281,8 @@ const Appointment = () => {
     })
     return (
         <div className="card">
-            <Toolbar className="mb-4" start={leftToolbarTemplate} center={centerToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
-            {view == "table" ? <DataTable value={filteredAppointments} stripedRows size='small' paginator rows={10}
+            <Toolbar className="mb-4 md:p-3 p-1" start={leftToolbarTemplate} center={centerToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
+            {view == "table" && !matches ? <DataTable value={filteredAppointments} stripedRows size='small' paginator rows={10}
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 rowsPerPageOptions={[10, 25, 50]} dataKey="id"
 
@@ -292,7 +295,7 @@ const Appointment = () => {
                 <Column field="status" header="Status" sortable filterMenuStyle={{ width: '14rem' }} style={{ minWidth: '12rem' }} body={statusBodyTemplate} filter />
 
                 <Column headerStyle={{ width: '5rem', textAlign: 'center' }} bodyStyle={{ textAlign: 'center', overflow: 'visible' }} body={actionBodyTemplate} />
-            </DataTable> : <div className='grid grid-cols-4 gap-5'>{
+            </DataTable> : <div className='grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5'>{
                 filteredAppointments.map((appointment) => (<ApCard key={appointment.id} {...appointment} />))
             }{
                     filteredAppointments.length === 0 && <div className='col-span-4 text-center text-gray-500'>No Appointment Found</div>

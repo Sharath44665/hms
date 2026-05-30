@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getUserProfile } from '../../Service/UserService';
 import useProtectedImage from '../Utilities/Dropzone/useProtectedImage';
+import { useMediaQuery } from '@mantine/hooks';
 
 const ProfileMenu = () => {
   const user = useSelector((state: any) => state.user)
@@ -26,12 +27,12 @@ const ProfileMenu = () => {
   },[])
  
   const url = useProtectedImage(picId); 
-
+  const matches = useMediaQuery('(max-width: 768px)');
   return (
     <Menu shadow="md" width={200}>
       <Menu.Target>
         <div className='flex items-center gap-3 cursor-pointer'>
-          <span className='font-medium text-lg text-neutral-900'>{user.name}</span>
+          {!matches && <span className='font-medium text-lg text-neutral-900'>{user.name}</span>}
           <Avatar src={url} variant='filled' alt="it's me" size={45} />
         </div>
       </Menu.Target>
